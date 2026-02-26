@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{ff827c24-e028-4cff-b9d6-1e6b4433a43e}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{3245d601-40e3-405c-8b14-fbc88a3cea8c}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Source Files\MathBoxHost">
+      <UniqueIdentifier>{13e21964-136b-4602-924b-b3eaddf7bdbc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Dialogs">
+      <UniqueIdentifier>{afbcaaa2-5731-4468-b515-733d3444f973}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Samples">
+      <UniqueIdentifier>{54bcb641-eca6-4a9f-a2fd-5b73c5f9b53c}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="mathpad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MathBoxHost\D2DFontManager.cpp">
+      <Filter>Source Files\MathBoxHost</Filter>
+    </ClCompile>
+    <ClCompile Include="MathBoxHost\D2DRenderer.cpp">
+      <Filter>Source Files\MathBoxHost</Filter>
+    </ClCompile>
+    <ClCompile Include="MathBoxHost\MathBoxHost.cpp">
+      <Filter>Source Files\MathBoxHost</Filter>
+    </ClCompile>
+    <ClCompile Include="CfgReader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MathBoxView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigMRUList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SettingsDlg.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="CfgWriter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MathBoxViewPage.cpp">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="mainfrm.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mathpad.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EditView.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MathBoxView.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MathBoxHost\D2DFontManager.h">
+      <Filter>Source Files\MathBoxHost</Filter>
+    </ClInclude>
+    <ClInclude Include="MathBoxHost\D2DGeomSink.h">
+      <Filter>Source Files\MathBoxHost</Filter>
+    </ClInclude>
+    <ClInclude Include="MathBoxHost\D2DRenderer.h">
+      <Filter>Source Files\MathBoxHost</Filter>
+    </ClInclude>
+    <ClInclude Include="MathBoxHost\MathBox_CAPI.h">
+      <Filter>Source Files\MathBoxHost</Filter>
+    </ClInclude>
+    <ClInclude Include="MathBoxHost\MathBoxHost.h">
+      <Filter>Source Files\MathBoxHost</Filter>
+    </ClInclude>
+    <ClInclude Include="MathBoxHost\MathBoxHostDefs.h">
+      <Filter>Source Files\MathBoxHost</Filter>
+    </ClInclude>
+    <ClInclude Include="CfgReader.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigMRUList.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="aboutdlg.h">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="finddlg.h">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorPage.h">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="SettingsDlg.h">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="MathBoxLibPage.h">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="MathBoxViewPage.h">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="CfgWriter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorBtn.h">
+      <Filter>Source Files\Dialogs</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Toolbar.bmp">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\MathPad.cfg" />
+    <None Include="..\Macros.mth" />
+    <None Include="..\Samples\2601.00713v1_page5.pdf">
+      <Filter>Samples</Filter>
+    </None>
+    <None Include="..\Samples\MathBoxV1.1.pdf">
+      <Filter>Samples</Filter>
+    </None>
+    <None Include="..\Samples\SamplesDescription.md">
+      <Filter>Samples</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuildStep Include="res\mathpad.exe.manifest">
+      <Filter>Resource Files</Filter>
+    </CustomBuildStep>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="mathpad.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\TestDoc.mth" />
+    <Text Include="..\Samples\2601.00713v1_page5.txt">
+      <Filter>Samples</Filter>
+    </Text>
+    <Text Include="..\Samples\MathBoxV1.1.txt">
+      <Filter>Samples</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\mathpad.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

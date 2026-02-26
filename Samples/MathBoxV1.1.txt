@@ -1,0 +1,694 @@
+%%%%%%%%MathPad Settings%%%%%%
+%% paper = A4
+%% margins = 54,35
+%% fontsize = 16.0pt
+%% textcolor = #004E00 %dark green
+%
+\text{\huge Supported Functions}\\\\
+TeX functions supported by MathBoxLib, sorted into logical groups.\\
+\text{\Large Accents}\\\\
+$
+\begin{array}{|l|l|l|}\hline
+a' \verb! a'! & \tilde{a} \verb! \tilde{a}! & \mathring{g} \verb! \mathring{g}!\\
+\hline
+a'' \verb! a''! & \widetilde{ac} \verb! \widetilde{ac}! & \overparen{AB} \verb! \overparen{AB}!\\
+\hline
+a^{\prime} \verb! a^{\prime}! & \utilde{AB} \verb! \utilde{AB}! & \underparen{AB} \verb! \underparen{AB}!\\
+\hline
+\acute{a} \verb! \acute{a}! & \vec{F} \verb! \vec{F}! & \Overrightarrow{AB} {\scriptsize\verb! \Overrightarrow{AB}!}\\
+\hline
+\bar{y} \verb! \bar{y}! & \overleftarrow{AB} {\small\verb! \overleftarrow!} & \overrightarrow{AB} {\scriptsize\verb! \overrightarrow{AB}!}\\
+\hline
+\breve{a} \verb! \breve{a}! & \underleftarrow{AB} {\small\verb! \underleftarrow!} & \underrightarrow{AB} {\scriptsize\verb! \underrightarrow{AB}!}\\
+\hline
+\check{a} \verb! \check{a}! & \overleftharpoon{AB} {\small\verb! \overleftharpoon!} & \overrightharpoon{AB} {\scriptsize\verb! \overrightharpoon{AB}!}\\
+\hline
+\dot{a} \verb! \dot{a}! & \overleftrightarrow{AB} {\scriptsize\verb! \overleftrightarrow!} & \overbrace{AB} \verb! \overbrace{AB}!\\
+\hline
+\ddot{a} \verb! \ddot{a}! & \underleftrightarrow{AB} {\scriptsize\verb! \underleftrightarrow!} & \underbrace{AB} \verb! \underbrace{AB}!\\
+\hline
+\dddot{a} \verb! \dddot{a}! & \overline{AB} \verb! \overline{AB}! & \overlinesegment{AB} {\scriptsize\verb! \overlinesegment{AB}!}\\
+\hline
+\ddddot{a} \verb! \ddddot{a}! & \underline{AB} \verb! \underline{AB}! & \underlinesegment{AB} {\scriptsize\verb! \underlinesegment{AB}!}\\
+\hline
+\grave{a} \verb! \grave{a}! & \widecheck{AB} \verb! \widecheck{AB}! & \underbar{AB}\verb! \underbar{AB}!\\
+\hline
+\hat{\theta} \verb! \hat{\theta}! & \widehat{ac} \verb! \widehat{ac}!\\
+\hline
+\end{array}
+$
+\\\\
+\text{\Large Delimiters}\\\\
+$
+\begin{array}{|l|l|l|l|}
+\hline
+() {\small \verb! ()!} & \lparen\rparen {\small \verb! \lparen!\\\verb! \rparen!} & \lceil\rceil {\small \verb! \lceil!\\\verb! \rceil!} & \uparrow {\small \verb! \uparrow!}\\
+\hline
+[ ] {\small \verb! [ ]!} & \lbrack\rbrack {\small \verb! \lbrack!\\\verb! \rbrack!} & \lfloor\rfloor {\small \verb! \lfloor!\\\verb! \rfloor!} & \downarrow {\small \verb! \downarrow!}\\
+\hline
+\{ \} {\small \verb! \{ \}!} & \lbrace\rbrace {\small \verb! \lbrace!\\\verb! \rbrace!} & \verb!NO \lmoustache! & \updownarrow {\small \verb! \updownarrow!}\\
+\hline
+< > {\small \verb! < >!} & \langle\rangle {\small \verb! \langle!\\\verb! \rangle!} & \lgroup\rgroup {\small \verb! \lgroup!\\\verb! \rgroup!} & \Uparrow {\small \verb! \Uparrow!}\\
+\hline
+| {\small \verb! |!} & \vert {\small \verb! \vert!} & \ulcorner\urcorner {\small \verb! \ulcorner!\\\verb! \urcorner!} & \Downarrow {\small \verb! \Downarrow!}\\
+\hline
+\| {\small \verb! \|!} & \Vert {\small \verb! \Vert!} & \llcorner\lrcorner {\small \verb! \llcorner!\\\verb! \lrcorner!} & \Updownarrow {\small \verb! \Updownarrow!}\\
+\hline
+\lvert\rvert {\small \verb! \lvert!\\\verb! \rvert!} & \lVert\rVert {\small \verb! \lVert!\\\verb! \rVert!} & \verb!\left.! & \backslash {\small \verb! \backslash!}\\
+\hline
+\lang\rang {\small \verb! \lang!\\\verb! \rang!} & \lt \gt {\small \verb! \lt!\\\verb! \gt!} & \llbracket\rrbracket {\small \verb! \llbracket!\\\verb! \rrbracket!} & / {\small \verb! /!}\\
+\hline
+\end{array}
+$
+\\\\\\
+\text{\large Accent functions inside \backslash text\{...\}}\\\\
+$
+\begin{array}{|l|l|l|l|}
+\hline
+\text{\'{a}} {\small \verb! \text{\'{a}}!} & \text{\~{a}} {\small \verb! \text{\~{a}}!} & \text{\.{a}} {\small \verb! \text{\.{a}}!} & \text{\H{a}} {\small \verb! \text{\H{a}}!}\\
+\hline
+\text{\`{a}} {\small \verb! \text{\`{a}}!} & \text{\={a}} {\small \verb! \text{\={a}}!} & \text{\"{a}} {\small \verb! \text{\"{a}}!} & \text{\v{a}} {\small \verb! \text{\v{a}}!}\\
+\hline
+\text{\^{a}} {\small \verb! \text{\^{a}}!} & \text{\u{a}} {\small \verb! \text{\u{a}}!} & \text{\r{a}} {\small \verb! \text{\r{a}}!}\\
+\hline
+\end{array}$
+\\\\
+\text{Delimiter Sizing}
+\\\\
+$\left(\LARGE{AB}\right)$   \verb!  \left(\LARGE{AB}\right)!\\
+$( \big( \Big( \bigg( \Bigg($  \verb!      ( \big( \Big( \bigg( \Bigg(!   
+\\\\
+\text{\Large Environments}\\\\
+$\begin{array}{|l|l|l|l|}\hline
+\begin{matrix}a & b \\c & d\end{matrix} & \text{\scriptsize\backslash begin\{matrix\}\\    a \& b \backslash\backslash\\    c \& d\\\backslash end\{matrix\}}&\begin{array}{cc}a & b \\c & d\end{array} & \text{\scriptsize\backslash begin\{array\}\{cc\}\\    a \& b \backslash\backslash\\    c \& d\\\backslash end\{array\}}\\
+\hline
+\begin{pmatrix}a & b \\c & d\end{pmatrix}&\text{\scriptsize\backslash begin\{pmatrix\}\\    a \& b \backslash\backslash\\    c \& d\\\backslash end\{pmatrix\}}&\begin{bmatrix}a & b \\c & d\end{bmatrix} & \text{\scriptsize\backslash begin\{bmatrix\}\\    a \& b \backslash\backslash\\    c \& d\\\backslash end\{bmatrix\}}\\
+\hline
+\begin{vmatrix}a & b \\c & d\end{vmatrix}&\text{\scriptsize\backslash begin\{vmatrix\}\\    a \& b \backslash\backslash\\    c \& d\\\backslash end\{vmatrix\}}&\begin{Vmatrix}a & b \\c & d\end{Vmatrix}&\text{\scriptsize\backslash begin\{Vmatrix\}\\    a \& b \backslash\backslash\\    c \& d\\\backslash end\{Vmatrix\}}\\
+\hline
+\begin{Bmatrix}a & b \\c & d\end{Bmatrix}&\text{\scriptsize\backslash begin\{Bmatrix\}\\    a \& b \backslash\backslash\\    c \& d\\\backslash end\{Bmatrix\}}&\begin{array}{c:c:c} a & b & c \\
+\hline
+ d & e & f\end{array} & \text{\scriptsize\backslash begin\{array\}\{c:c:c\}\\    a \& b \& c\backslash\backslash  \backslash hline\\    d \& e \& f\\\backslash end\{array\}}\\
+\hline
+x=\begin{cases}a & \text{if } b \\c &\text{if } d\end{cases} & \text{\scriptsize x=\backslash begin\{cases\}\\a \&\backslash text\{if \} b \backslash\backslash\\c \&\backslash text\{if \} d\\\backslash end\{cases\}} & \begin{rcases}a & \text{if } b \\c &\text{if } d\end{rcases}\Rightarrow\ldots & \text{\scriptsize\backslash begin\{rcases\}\\a \&\backslash text\{if \} b \backslash\backslash\\c \&\backslash text\{if \} d\\\backslash end\{rcases\}\\\backslash Rightarrow...}\\
+\hline
+\begin{smallmatrix}a & b \\c & d\end{smallmatrix}&\text{\scriptsize\backslash begin\{smallmatrix\}\\    a \& b \backslash\backslash\\    c \& d\\\backslash end\{smallmatrix\}}&\sum\limits_{\begin{subarray}{l}i\in\Lambda\\0<j<n\end{subarray}}&\text{\scriptsize\backslash sum\_\{\\\backslash begin\{subarray\}\{l\}\\i\backslash in\backslash Lambda\backslash\backslash\\0<j<n\backslash end\{subarray\}\}}\\
+\hline
+\end{array}$\\
+\\
+NO \texttt{align, alignat, equation, split, gather,multiline}\\
+environments.
+\\\\\\\\\\\\
+\text{\Large Letters and Unicode}\\\\
+\text{Greek Letters}\\\\
+$\begin{array}{|l|l|l|l|}\hline
+\Alpha {\small \verb! \Alpha!} & \Beta {\small \verb! \Beta!} & \Gamma {\small \verb! \Gamma!} & \Delta {\small \verb! \Delta!}\\
+\hline
+\Epsilon {\small \verb! \Epsilon!} & \Zeta {\small \verb! \Zeta!} & \Eta {\small \verb! \Eta!} & \Theta {\small \verb! \Theta!}\\
+\hline
+\Iota {\small \verb! \Iota!} & \Kappa {\small \verb! \Kappa!} & \Lambda {\small \verb! \Lambda!} & \Mu {\small \verb! \Mu!}\\
+\hline
+\Nu {\small \verb! \Nu!} & \Xi {\small \verb! \Xi!} & \Omicron {\small \verb! \Omicron!} & \Pi {\small \verb! \Pi!}\\
+\hline
+\Rho {\small \verb! \Rho!} & \Sigma {\small \verb! \Sigma!} & \Tau {\small \verb! \Tau!} & \Upsilon {\small \verb! \Upsilon!}\\
+\hline
+\Phi {\small \verb! \Phi!} & \Chi {\small \verb! \Chi!} & \Psi {\small \verb! \Psi!} & \Omega {\small \verb! \Omega!}\\
+\hline
+\varGamma {\small \verb! \varGamma!} & \varDelta {\small \verb! \varDelta!} & \varTheta {\small \verb! \varTheta!} & \varLambda {\small \verb! \varLambda!}\\
+\hline
+\varXi {\small \verb! \varXi!} & \varPi {\small \verb! \varPi!} & \varSigma {\small \verb! \varSigma!} & \varUpsilon {\small \verb! \varUpsilon!}\\
+\hline
+\varPhi {\small \verb! \varPhi!} & \varPsi {\small \verb! \varPsi!} & \varOmega {\small \verb! \varOmega!}\\
+\hline
+\alpha {\small \verb! \alpha!} & \beta {\small \verb! \beta!} & \gamma {\small \verb! \gamma!} & \delta {\small \verb! \delta!}\\
+\hline
+\epsilon {\small \verb! \epsilon!} & \zeta {\small \verb! \zeta!} & \eta {\small \verb! \eta!} & \theta {\small \verb! \theta!}\\
+\hline
+\iota {\small \verb! \iota!} & \kappa {\small \verb! \kappa!} & \lambda {\small \verb! \lambda!} & \mu {\small \verb! \mu!}\\
+\hline
+\nu {\small \verb! \nu!} & \xi {\small \verb! \xi!} & \omicron {\small \verb! \omicron!} & \pi {\small \verb! \pi!}\\
+\hline
+\rho {\small \verb! \rho!} & \sigma {\small \verb! \sigma!} & \tau {\small \verb! \tau!} & \upsilon {\small \verb! \upsilon!}\\
+\hline
+\phi {\small \verb! \phi!} & \chi {\small \verb! \chi!} & \psi {\small \verb! \psi!} & \omega {\small \verb! \omega!}\\
+\hline
+\varepsilon {\small \verb! \varepsilon!} & \varkappa {\small \verb! \varkappa!} & \vartheta {\small \verb! \vartheta!} & \thetasym \verb! \thetasym!\\
+\hline
+\varpi {\small \verb! \varpi!} & \varrho {\small \verb! \varrho!} & \varsigma {\small \verb! \varsigma!} & \varphi {\small \verb! \varphi!}\\
+\hline
+\verb!NO \digamma!\\
+\hline
+\end{array}$
+\\\\
+Other Letters
+\\\\
+$\begin{array}{|l|l|l|l|}\hline
+\imath {\small \verb! \imath!} & \nabla {\small \verb! \nabla!} & \Im {\small \verb! \Im!} & \Reals {\small \verb! \Reals!}\\
+\hline
+\text{OE} {\small \verb! \text{OE}!} & \jmath {\small \verb! \jmath!} & \partial {\small \verb! \partial!} & \image {\small \verb! \image!}\\
+\hline
+\wp {\small \verb! \wp!} & \text{\o} {\small \verb! \text{\o}!} & \aleph {\small \verb! \aleph!} & \verb!NO \Game!\\
+\hline
+\Bbbk {\small \verb! \Bbbk!} & \weierp {\small \verb! \weierp!} & \text{\O} {\small \verb! \text{\O}!} & \alef {\small \verb! \alef!}\\
+\hline
+\verb!NO \Finv! & \N {\small \verb! \N!} & \Z {\small \verb! \Z!} & \text{\ss} {\small \verb! \text{\ss}!}\\
+\hline
+\alefsym {\small \verb! \alefsym!} & \cnums {\small \verb! \cnums!} & \natnums {\small \verb! \natnums!} & \text{\aa} {\small \verb! \text{\aa}!}\\
+\hline
+\text{\i} {\small \verb! \text{\i}!} & \beth {\small \verb! \beth!} & \Complex {\small \verb! \Complex!} & \R {\small \verb! \R!}\\
+\hline
+\text{\AA} {\small \verb! \text{\AA}!} & \text{\j} {\small \verb! \text{\j}!} & \gimel {\small \verb! \gimel!} & \ell {\small \verb! \ell!}\\
+\hline
+\Re {\small \verb! \Re!} & \text{\ae} {\small \verb! \text{\ae}!} & \daleth {\small \verb! \daleth!} & \hbar {\small \verb! \hbar!}\\
+\hline
+\real {\small \verb! \real!} & \text{\AE} {\small \verb! \text{\AE}!} & \eth {\small \verb! \eth!} & \hslash {\small \verb! \hslash!}\\
+\hline
+\reals {\small \verb! \reals!} & \text{\oe} {\small \verb! \text{\oe}!}\\
+\hline
+\end{array}$
+\\\\\\
+\text{\Large Layout}
+\\\\
+\text{Annotation}
+\\\\
+$\begin{array}{|l|l|}\hline
+\cancel{5} \verb! \cancel{5}! & {\overbrace{a+b+c}^{\text{note}}\\\verb!      \overbrace{a+b+c}^{\text{note}!} \\
+\hline
+\bcancel{5} \verb! \bcancel{5}! & \underbrace{a+b+c}_{\text{note}} {\small \verb!\underbrace{a+b+c}_{\text{note}}!}\\
+\hline
+\xcancel{ABC} {\small\verb! \xcancel{ABC}!} & \not= \verb! \not=! \\
+\hline
+\sout{abc}\verb! \sout{abc}! & \boxed{\pi=\frac{c}{d}}\verb! \boxed{\pi=\frac{c}{d}}! \\
+\hline
+a_{\angl n} \verb! a_{\angl n}! & \phase{-78^\circ} \verb! \phase{-78^\circ}! \\
+\hline
+\end{array}$
+\\\\
+\text{Vertical Layout}\\\\
+$\begin{array}{|l|l|l|}\hline
+x_n {\small \verb! x_n!} & \stackrel{!}{=} {\small \verb. \stackrel{!}{=}.} & \verb!NO \atop!\\
+\hline
+e^x {\small \verb! e^x!} & \overset{!}{=} {\small \verb. \overset{!}{=}.} & a\raisebox{0.25em}{\ensuremath{b}}c {\scriptsize\verb! a\raisebox{0.25em}{$b$}c!}\\
+\hline
+_u^o {\small \verb! _u^o!} & \underset{!}{=} {\small \verb. \underset{!}{=}.} & \verb!NO \vcenter!\\
+\hline
+\, & \sum\limits_{\substack{0<i<m\\0<j<n}} {\small \verb! \sum_{\substack{...}}!}\\
+\hline
+\end{array}$
+\\\\
+NO Overlap Commands
+\\\\
+Spacing: \verb+ \, \: \; \quad \qquad \! \hskip+\textit{\{distance\}}
+\\
+\verb!NO: \vspace, \vfill, \par!
+\\\\\\
+\text{\Large Logic and Set Theory}
+\\\\
+$\begin{array}{|l|l|l|l|}\hline
+\forall {\small \verb! \forall!} & \complement {\small \verb! \complement!} & \therefore {\small \verb! \therefore!} & \emptyset {\small \verb! \emptyset!}\\
+\hline
+\exists {\small \verb! \exists!} & \subset {\small \verb! \subset!} & \because {\small \verb! \because!} & \empty {\small \verb! \empty!}\\
+\hline
+\exist {\small \verb! \exist!} & \supset {\small \verb! \supset!} & \mapsto {\small \verb! \mapsto!} & \varnothing {\small \verb! \varnothing!}\\
+\hline
+\nexists {\small \verb! \nexists!} & \mid {\small \verb! \mid!} & \to {\small \verb! \to!} & \implies {\small \verb!\implies!}\\
+\hline
+\in {\small \verb! \in!} & \land {\small \verb! \land!} & \gets {\small \verb! \gets!} & \impliedby {\small \verb!\impliedby!}\\
+\hline
+\isin {\small \verb! \isin!} & \lor {\small \verb! \lor!} & \leftrightarrow {\small \verb! \leftrightarrow!} & \iff {\small \verb! \iff!}\\
+\hline
+\notin {\small \verb! \notin!} & \ni {\small \verb! \ni!} & \notni {\small \verb! \notni!} & \neg {\small \verb! \neg!}\\
+\hline
+\end{array}$
+\\\\\\\\
+\text{\Large Macros}\\\\
+\verb!\setlength{varname}{dimension}, \let\macroname=\command!\\
+\verb!\newcommand\macroname[numargs][defarg]{definition}!\\
+\\\\
+\text{\Large Operators}\\\\
+\text{Big Operators}\\\\
+$\begin{array}{|l|l|l|l|}\hline
+\hline
+\sum {\small \verb! \sum!} & \prod {\small \verb! \prod!} & \bigotimes {\small \verb! \bigotimes!} & \bigvee {\small \verb! \bigvee!}\\
+\hline
+\int {\small \verb! \int!} & \coprod {\small \verb! \coprod!} & \bigoplus {\small \verb! \bigoplus!} & \bigwedge {\small \verb! \bigwedge!}\\
+\hline
+\iint {\small \verb! \iint!} & \intop {\small \verb! \intop!} & \bigodot {\small \verb! \bigodot!} & \bigcap {\small \verb! \bigcap!}\\
+\hline
+\iiint {\small \verb! \iiint!} & \verb!NO \smallint! & \biguplus {\small \verb! \biguplus!} & \bigcup {\small \verb! \bigcup!}\\
+\hline
+\oint {\small \verb! \oint!} & \oiint {\small \verb! \oiint!} & \oiiint {\small \verb! \oiiint!} & \bigsqcup {\small \verb! \bigsqcup!}\\
+\hline
+\end{array}$
+\\\\\\
+\text{Binary Operators}\\\\
+$\begin{array}{|l|l|l|l|}\hline
++ {\small \verb! +!} & \cdot {\small \verb! \cdot!} & \gtrdot {\small \verb! \gtrdot!} & \pmod {\tiny \verb! \pmod!}\\
+\hline
+- {\small \verb!  -!} & \cdotp {\small \verb! \cdotp!} & \intercal {\small \verb! \intercal!} & \verb!NO \pod!\\
+\hline
+/ {\small \verb! /!} & \centerdot {\small \verb! \centerdot!} & \land {\small \verb! \land!} & \rhd {\small \verb! \rhd!}\\
+\hline
+* {\small \verb! *!} & \circ {\small \verb! \circ!} & \leftthreetimes {\tiny \verb! \leftthreetimes!} & \rightthreetimes{\tiny \verb! \rightthreetimes!}\\
+\hline
+\amalg {\small \verb! \amalg!} & \circledast {\small \verb! \circledast!} & \ldotp {\small \verb! \ldotp!} & \rtimes {\small \verb! \rtimes!}\\
+\hline
+\& {\small \verb! \&!} & \circledcirc {\small \verb! \circledcirc!} & \lor {\small \verb! \lor!} & \setminus {\small \verb! \setminus!}\\
+\hline
+\ast {\small \verb! \ast!} & \circleddash {\small \verb! \circleddash!} & \lessdot {\small \verb! \lessdot!} & \smallsetminus {\tiny \verb! \smallsetminus!}\\
+\hline
+\barwedge {\small \verb! \barwedge!} & \Cup {\small \verb! \Cup!} & \lhd {\small \verb! \lhd!} & \sqcap {\small \verb! \sqcap!}\\
+\hline
+\bigcirc {\small \verb! \bigcirc!} & \cup {\small \verb! \cup!} & \ltimes {\small \verb! \ltimes!} & \sqcup {\small \verb! \sqcup!}\\
+\hline
+\bmod {\small \verb! \bmod!} & \curlyvee {\small \verb! \curlyvee!} & \mod {\tiny \verb! \mod!} & \times {\small \verb! \times!}\\
+\hline
+\boxdot {\small \verb! \boxdot!} & \curlywedge {\small \verb! \curlywedge!} & \mp {\small \verb! \mp!} & \unlhd {\small \verb! \unlhd!}\\
+\hline
+\boxminus {\small \verb! \boxminus!} & \div {\small \verb! \div!} & \div {\small \verb! \div!} & \unrhd {\small \verb! \unrhd!}\\
+\hline
+\boxplus {\small \verb! \boxplus!} & \divideontimes {\small \verb! \divideontimes!} & \ominus {\small \verb! \ominus!} & \uplus {\small \verb! \uplus!}\\
+\hline
+\boxtimes {\small \verb! \boxtimes!} & \dotplus {\small \verb! \dotplus!} & \oplus {\small \verb! \oplus!} & \vee {\small \verb! \vee!}\\
+\hline
+\bullet {\small \verb! \bullet!} & \texttt{\small NO doublebarwedge} & \otimes {\small \verb! \otimes!} & \veebar {\small \verb! \veebar!}\\
+\hline
+\Cap {\small \verb! \Cap!} & \doublecap {\small \verb! \doublecap!} & \oslash {\small \verb! \oslash!} & \wedge {\small \verb! \wedge!}\\
+\hline
+\cap {\small \verb! \cap!} & \doublecup {\small \verb! \doublecup!} & \pm {\small \verb! \pm!} & \wr {\small \verb! \wr!}\\
+\hline
+\end{array}$
+\\\\\\\\
+Fractions and Binomials
+\\\\
+$\begin{array}{|l|l|l|}\hline
+\frac{a}{b} {\small \verb! \frac{a}{b}!} & \tfrac{a}{b} {\small \verb! \tfrac{a}{b}!} & \verb!NO \genfrac!\\
+\hline
+\verb!NO \over! & \dfrac{a}{b} {\small \verb! \dfrac{a}{b}!} & \verb!NO \cfrac!\\
+\hline
+a/b {\small \verb! a/b!} & \, & \verb!NO \above!\\
+\hline
+\binom{n}{k} {\small \verb! \binom{n}{k}!} & \dbinom{n}{k} {\small \verb! \dbinom{n}{k}!} & \verb!NO \brace!\\
+\hline
+\verb!NO \choose! & \tbinom{n}{k} {\small \verb! \tbinom{n}{k}!} & \verb!NO \brack!\\
+\hline
+\end{array}$
+\\\\
+\text{Math Operators}\\\\
+$\begin{array}{|l|l|l|l|}\hline
+\arcsin {\small \verb! \arcsin!} & \cosec {\small \verb! \cosec!} & \deg {\small \verb! \deg!} & \sec {\small \verb! \sec!}\\
+\hline
+\arccos {\small \verb! \arccos!} & \cosh {\small \verb! \cosh!} & \dim {\small \verb! \dim!} & \sin {\small \verb! \sin!}\\
+\hline
+\arctan {\small \verb! \arctan!} & \cot {\small \verb! \cot!} & \exp {\small \verb! \exp!} & \sinh {\small \verb! \sinh!}\\
+\hline
+\arctg {\small \verb! \arctg!} & \cotg {\small \verb! \cotg!} & \hom {\small \verb! \hom!} & \sh {\small \verb! \sh!}\\
+\hline
+\arcctg {\small \verb! \arcctg!} & \coth {\small \verb! \coth!} & \ker {\small \verb! \ker!} & \tan {\small \verb! \tan!}\\
+\hline
+\arg {\small \verb! \arg!} & \csc {\small \verb! \csc!} & \lg {\small \verb! \lg!} & \tanh {\small \verb! \tanh!}\\
+\hline
+\ch {\small \verb! \ch!} & \ctg {\small \verb! \ctg!} & \ln {\small \verb! \ln!} & \tg {\small \verb! \tg!}\\
+\hline
+\cos {\small \verb! \cos!} & \cth {\small \verb! \cth!} & \log {\small \verb! \log!} & \th {\small \verb! \th!}\\
+\hline
+\gcd {\small \verb! \gcd!} & \operatorname{f} {\small \verb! \operatorname{f}!}\\
+\hline
+\end{array}$
+\\\\
+\text{Math Operators with under/over limits}\\\\
+$\begin{array}{|l|l|l|}\hline
+\argmax {\small \verb! \argmax!} & \injlim {\small \verb! \injlim!} & \min {\small \verb! \min!}\\
+\hline
+\argmin {\small \verb! \argmin!} & \lim {\small \verb! \lim!} & \plim {\small \verb! \plim!}\\
+\hline
+\det {\small \verb! \det!} & \liminf {\small \verb! \liminf!} & \Pr {\small \verb! \Pr!}\\
+\hline
+\limsup {\small \verb! \limsup!} & \projlim {\small \verb! \projlim!} & \varprojlim {\small \verb! \varprojlim!}\\
+\hline
+\inf {\small \verb! \inf!} & \max {\small \verb! \max!} & \sup {\small \verb! \sup!} & \\
+\hline
+\varinjlim {\small \verb! \varinjlim!} & \varliminf {\small \verb! \varliminf!} & \varlimsup {\small \verb! \varlimsup!}\\
+\hline
+\end{array}$
+\\\\
+Sqrt: $\sqrt{\sqrt[2]{\sqrt[3]{\sqrt[4]{x}}}}$\verb!   $\sqrt{\sqrt[2]{\sqrt[3]{\sqrt[4]{x}}}}$! 
+\\\\\\\\\\\\\\\\
+\text{\Large Relations}
+\\\\
+$\begin{array}{|l|l|l|}\hline
+= {\small \verb! =!} & \doteqdot {\small \verb! \doteqdot!} & \lessapprox {\small \verb! \lessapprox!}\\
+\hline
+< {\small \verb! <!} & \eqcirc {\small\verb! \eqcirc!} & \lesseqgtr {\small \verb! \lesseqgtr!}\\
+\hline
+> {\small \verb! >!} & \eqcolon {\small\verb! \eqcolon!} & \lesseqqgtr {\small \verb! \lesseqqgtr!}\\
+\hline
+: {\small \verb! :!} & \Eqcolon {\small\verb! \Eqcolon!} & \lessgtr {\small \verb! \lessgtr!}\\
+\hline
+\approx {\small \verb! \approx!} & \eqqcolon {\small \verb! \eqqcolon!} & \lesssim {\small \verb! \lesssim!}\\
+\hline
+\approxcolon \verb! \approxcolon! & \Eqqcolon {\small\verb!\Eqqcolon!} & \ll {\small \verb! \ll!}\\
+\hline
+\approxcoloncolon {\scriptsize\verb! \approxcoloncolon!} & \eqsim {\small \verb! \eqsim!} & \lll {\small \verb! \lll!}\\
+\hline
+\approxeq {\small \verb! \approxeq!} & \eqslantgtr {\small \verb! \eqslantgtr!} & \llless {\small \verb! \llless!}\\
+\hline
+\asymp {\small \verb! \asymp!} & \eqslantless {\small \verb! \eqslantless!} & \lt {\small \verb! \lt!}\\
+\hline
+\backepsilon {\small \verb! \backepsilon!} & \equiv {\small \verb! \equiv!} & \mid {\small \verb! \mid!}\\
+\hline
+\backsim {\small \verb! \backsim!} & \fallingdotseq {\small \verb! \fallingdotseq!} & \models {\small \verb! \models!}\\
+\hline
+\backsimeq {\small \verb! \backsimeq!} & \frown {\small \verb! \frown!} & \multimap {\small \verb! \multimap!}\\
+\hline
+\between {\small \verb! \between!} & \ge {\small \verb! \ge!} & \origof {\small \verb! \origof!}\\
+\hline
+\bowtie {\small \verb! \bowtie!} & \geq {\small \verb! \geq!} & \owns {\small \verb! \owns!}\\
+\hline
+\bumpeq {\small \verb! \bumpeq!} & \geqq {\small \verb! \geqq!} & \parallel {\small \verb! \parallel!}\\
+\hline
+\Bumpeq {\small \verb! \Bumpeq!} & \geqslant {\small \verb! \geqslant!} & \perp {\small \verb! \perp!}\\
+\hline
+\circeq {\small \verb! \circeq!} & \gg {\small \verb! \gg!} & \pitchfork \verb! \pitchfork!\\
+\hline
+\colonapprox \verb! \colonapprox! & \ggg {\small \verb! \ggg!} & \prec {\small \verb! \prec!}\\
+\hline
+\Colonapprox \verb! \Colonapprox! & \gggtr {\small \verb! \gggtr!} & \verb!NO \precapprox!\\
+\hline
+\coloneq \verb! \coloneq! & \gt {\small \verb! \gt!} & \preccurlyeq {\small \verb! \preccurlyeq!}\\
+\hline
+\Coloneq \verb! \Coloneq! & \gtrapprox {\small \verb! \gtrapprox!} & \preceq {\small \verb! \preceq!}\\
+\hline
+\coloneqq \verb! \coloneqq! & \gtreqless {\small \verb! \gtreqless!} & \precsim {\small \verb! \precsim!}\\
+\hline
+\Coloneqq\verb! \Coloneqq! & \gtreqqless {\small \verb! \gtreqqless!} & \propto {\small \verb! \propto!}\\
+\hline
+\colonsim\verb! \colonsim! & \gtrless {\small \verb! \gtrless!} & \risingdotseq {\small \verb! \risingdotseq!}\\
+\hline
+\Colonsim\verb! \Colonsim! & \gtrsim {\small \verb! \gtrsim!} & \shortmid {\small \verb! \shortmid!}\\
+\hline
+\cong {\small \verb! \cong!} & \imageof {\small \verb! \imageof!} & \shortparallel {\small \verb! \shortparallel!}\\
+\hline
+\curlyeqprec {\small \verb! \curlyeqprec!} & \in {\small \verb! \in!} & \sim {\small \verb! \sim!}\\
+\hline
+\curlyeqsucc {\small \verb! \curlyeqsucc!} & \verb!NO \Join! & \simcolon\verb! \simcolon!\\
+\hline
+\dashv {\small \verb! \dashv!} & \le {\small \verb! \le!} & \simcoloncolon \verb! \simcoloncolon!\\
+\hline
+\dblcolon {\small \verb! \dblcolon!} & \leq {\small \verb! \leq!} & \simeq {\small \verb! \simeq!}\\
+\hline
+\doteq {\small \verb! \doteq!} & \leqq {\small \verb! \leqq!} & \verb!NO \smallfrown!\\
+\hline
+\Doteq {\small \verb! \Doteq!} & \leqslant {\small \verb! \leqslant!} & \verb!NO \smallsmile!\\
+\hline
+\end{array}$
+\\\\\\\\\\
+\text{\Large Relations cont.}
+\\\\
+$\begin{array}{|l|l|l|}\hline
+\smile {\small \verb! \smile!} & \sqsubset {\small \verb! \sqsubset!} & \sqsubseteq {\small \verb! \sqsubseteq!}\\
+\hline
+\sqsupset {\small \verb! \sqsupset!} & \sqsupseteq {\small \verb! \sqsupseteq!} & \Subset {\small \verb! \Subset!}\\
+\hline
+\subset {\small \verb! \subset!} & \subseteq {\small \verb! \subseteq!} & \verb!NO \subseteqq!\\
+\hline
+\succ {\small \verb! \succ!} & \verb!NO \succapprox! & \succcurlyeq {\small \verb! \succcurlyeq!}\\
+\hline
+\succeq {\small \verb! \succeq!} & \succsim {\small \verb! \succsim!} & \Supset {\small \verb! \Supset!}\\
+\hline
+\supset {\small \verb! \supset!} & \supseteq {\small \verb! \supseteq!} & \verb!NO \supseteqq!\\
+\hline
+\thickapprox {\small \verb! \thickapprox!} & \thicksim {\small \verb! \thicksim!} & \trianglelefteq {\small \verb! \trianglelefteq!}\\
+\hline
+\triangleq {\small \verb! \triangleq!} & \trianglerighteq {\small \verb! \trianglerighteq!} & \verb!NO \varpropto!\\
+\hline
+\vartriangle {\small \verb! \vartriangle!} & \vartriangleleft {\small \verb! \vartriangleleft!} & \vartriangleright {\small \verb! \vartriangleright!}\\
+\hline
+\vcentcolon {\small \verb! \vcentcolon!} & \vdash {\small \verb! \vdash!} & \vDash {\small \verb! \vDash!}\\
+\hline
+\Vdash {\small \verb! \Vdash!} & \Vvdash {\small \verb! \Vvdash!}\\
+\hline
+\end{array}$
+\\\\
+\text{\Large Negated Relations}
+\\\\
+$\begin{array}{|l|l|l|}\hline
+\gnapprox {\small \verb! \gnapprox!} & \ngeqslant\verb! \ngeqslant! & \nsubseteq {\small \verb! \nsubseteq!}\\
+\hline
+\gneq {\small \verb! \gneq!} & \ngtr {\small \verb! \ngtr!} & \verb!NO \nsubseteqq!\\
+\hline
+\gneqq {\small \verb! \gneqq!} & \nleq {\small \verb! \nleq!} & \nsucc {\small \verb! \nsucc!}\\
+\hline
+\gnsim {\small \verb! \gnsim!} & \nleqq\verb! \nleqq! & \nsucceq \verb! \nsucceq!\\
+\hline
+\verb!NO \gvertneqq! & \nleqslant\verb! \nleqslant! & \nsupseteq {\small \verb! \nsupseteq!}\\
+\hline
+\lnapprox {\small \verb! \lnapprox!} & \nless {\small \verb! \nless!} & \verb!NO \nsupseteqq!\\
+\hline
+\lneq {\small \verb! \lneq!} & \nmid {\small \verb! \nmid!} & \ntriangleleft {\small \verb! \ntriangleleft!}\\
+\hline
+\lneqq {\small \verb! \lneqq!} & \notin {\small \verb! \notin!} & \ntrianglelefteq {\small \verb! \ntrianglelefteq!}\\
+\hline
+\lnsim {\small \verb! \lnsim!} & \notni\verb! \notni! & \ntriangleright {\small \verb! \ntriangleright!}\\
+\hline
+\verb!NO \lvertneqq! & \nparallel {\small \verb! \nparallel!} & \ntrianglerighteq {\small \verb! \ntrianglerighteq!}\\
+\hline
+\ncong {\small \verb! \ncong!} & \nprec {\small \verb! \nprec!} & \nvdash {\small \verb! \nvdash!}\\
+\hline
+\ne {\small \verb! \ne!} & \npreceq\verb! \npreceq! & \nvDash {\small \verb! \nvDash!}\\
+\hline
+\neq {\small \verb! \neq!} & \nshortmid\verb! \nshortmid! & \nVDash {\small \verb! \nVDash!}\\
+\hline
+\ngeq {\small \verb! \ngeq!} & \nshortparallel\verb! \nshortparallel! & \nVdash {\small \verb! \nVdash!}\\
+\hline
+\ngeqq\verb! \ngeqq! & \nsim {\small \verb! \nsim!} & \verb!NO \precnapprox!\\
+\hline
+\verb!NO \precneqq! & \precnsim {\small \verb! \precnsim!} & \subsetneq {\small \verb! \subsetneq!}\\
+\hline
+\verb!NO \subsetneqq! & \verb!NO \succnapprox! & \verb!NO \succneqq!\\
+\hline
+\succnsim {\small \verb! \succnsim!} & \supsetneq {\small \verb! \supsetneq!} & \verb!NO \supsetneqq!\\
+\hline
+{\small \verb!NO \varsubsetneq!} & \verb!NO \varsubsetneqq! & \verb!NO \varsupsetneq!\\
+\hline
+{\small \verb!NO \varsupsetneqq!}\\
+\hline
+\end{array}$
+\\\\\\\\
+\text{\Large Arrows}
+\\\\
+$\begin{array}{|l|l|l|}\hline
+\circlearrowleft {\small \verb! \circlearrowleft!} & \leftharpoonup {\small \verb! \leftharpoonup!} & \rArr {\small \verb! \rArr!}\\
+\hline
+\circlearrowright {\small \verb! \circlearrowright!} & \leftleftarrows {\small \verb! \leftleftarrows!} & \rarr {\small \verb! \rarr!}\\
+\hline
+\curvearrowleft {\small \verb! \curvearrowleft!} & \leftrightarrow {\small \verb! \leftrightarrow!} & \restriction {\small \verb! \restriction!}\\
+\hline
+\curvearrowright {\small \verb! \curvearrowright!} & \Leftrightarrow {\small \verb! \Leftrightarrow!} & \rightarrow {\small \verb! \rightarrow!}\\
+\hline
+\Darr {\small \verb! \Darr!} & \leftrightarrows {\small \verb! \leftrightarrows!} & \Rightarrow {\small \verb! \Rightarrow!}\\
+\hline
+\dArr {\small \verb! \dArr!} & \leftrightharpoons {\tiny \verb! \leftrightharpoons!} & \rightarrowtail {\tiny \verb! \rightarrowtail!}\\
+\hline
+\darr {\small \verb! \darr!} & \leftrightsquigarrow {\tiny \verb! \leftrightsquigarrow!} & \rightharpoondown {\tiny \verb! \rightharpoondown!}\\
+\hline
+\verb!NO \dashleftarrow! & \Lleftarrow {\small \verb! \Lleftarrow!} & \rightharpoonup {\tiny \verb! \rightharpoonup!}\\
+\hline
+\verb!NO \dashrightarrow! & \longleftarrow {\small \verb! \longleftarrow!} & \rightleftarrows {\tiny \verb! \rightleftarrows!}\\
+\hline
+\downarrow {\small \verb! \downarrow!} & \Longleftarrow {\small \verb! \Longleftarrow!} & \rightleftharpoons {\tiny \verb! \rightleftharpoons!}\\
+\hline
+\Downarrow {\small \verb! \Downarrow!} & \longleftrightarrow {\tiny \verb! \longleftrightarrow!} & \rightrightarrows {\tiny \verb! \rightrightarrows!}\\
+\hline
+\downdownarrows {\small \verb! \downdownarrows!} & \Longleftrightarrow {\tiny \verb! \Longleftrightarrow!} & \rightsquigarrow {\tiny \verb! \rightsquigarrow!}\\
+\hline
+\downharpoonleft {\small \verb! \downharpoonleft!} & \longmapsto {\small \verb! \longmapsto!} & \Rrightarrow {\small \verb! \Rrightarrow!}\\
+\hline
+\downharpoonright {\small \verb! \downharpoonright!} & \longrightarrow {\tiny \verb! \longrightarrow!} & \Rsh {\small \verb! \Rsh!}\\
+\hline
+\gets {\small \verb! \gets!} & \Longrightarrow {\tiny \verb! \Longrightarrow!} & \searrow {\small \verb! \searrow!}\\
+\hline
+\Harr {\small \verb! \Harr!} & \looparrowleft {\small \verb! \looparrowleft!} & \swarrow {\small \verb! \swarrow!}\\
+\hline
+\hArr {\small \verb! \hArr!} & \looparrowright {\small \verb! \looparrowright!} & \to {\small \verb! \to!}\\
+\hline
+\harr {\small \verb! \harr!} & \Lrarr {\small \verb! \Lrarr!} & \twoheadleftarrow {\tiny \verb! \twoheadleftarrow!}\\
+\hline
+\hookleftarrow {\small \verb! \hookleftarrow!} & \lrArr {\small \verb! \lrArr!} & \twoheadrightarrow {\tiny \verb! \twoheadrightarrow!}\\
+\hline
+\hookrightarrow {\small \verb! \hookrightarrow!} & \lrarr {\small \verb! \lrarr!} & \Uarr {\small \verb! \Uarr!}\\
+\hline
+\iff {\small \verb! \iff!} & \Lsh {\small \verb! \Lsh!} & \uArr {\small \verb! \uArr!}\\
+\hline
+\impliedby {\small \verb! \impliedby!} & \mapsto {\small \verb! \mapsto!} & \uarr {\small \verb! \uarr!}\\
+\hline
+\implies {\small \verb! \implies!} & \nearrow {\small \verb! \nearrow!} & \uparrow {\small \verb! \uparrow!}\\
+\hline
+\Larr {\small \verb! \Larr!} & \nleftarrow {\small \verb! \nleftarrow!} & \Uparrow {\small \verb! \Uparrow!}\\
+\hline
+\lArr {\small \verb! \lArr!} & \nLeftarrow {\small \verb! \nLeftarrow!} & \updownarrow {\tiny \verb! \updownarrow!}\\
+\hline
+\larr {\small \verb! \larr!} & \nleftrightarrow {\small \verb! \nleftrightarrow!} & \Updownarrow {\tiny \verb! \Updownarrow!}\\
+\hline
+\leadsto {\small \verb! \leadsto!} & \nLeftrightarrow {\small \verb! \nLeftrightarrow!} & \upharpoonleft {\tiny \verb! \upharpoonleft!}\\
+\hline
+\leftarrow {\small \verb! \leftarrow!} & \nrightarrow {\small \verb! \nrightarrow!} & \upharpoonright {\tiny \verb! \upharpoonright!}\\
+\hline
+\Leftarrow {\small \verb! \Leftarrow!} & \nRightarrow {\small \verb! \nRightarrow!} & \upuparrows {\small \verb! \upuparrows!}\\
+\hline
+\leftarrowtail {\small \verb! \leftarrowtail!} & \nwarrow {\small \verb! \nwarrow!} & \\
+\hline
+\leftharpoondown {\small \verb! \leftharpoondown!} & \Rarr {\small \verb! \Rarr!} & \\
+\hline
+\end{array}$
+\\\\
+\text{NO Extensible Arrows}\\
+\text{NO Bra-ket Notation}
+\\\\\\\\\\\\
+\text{\Large Style, Color, Size, and Font}\\\\\\
+\text{Class Assignment}\\\\
+\verb!\mathbin \mathclose \mathinner \mathop!\\
+\verb!\mathopen \mathord \mathpunct \mathrel!\\\\\\
+\text{Color}\\\\
+\colorbox{aqua}{$F=ma$} \verb!\colorbox{aqua}{$F=ma$}!\\
+\fcolorbox{red}{aqua}{$F=ma$} \verb!\fcolorbox{red}{aqua}{$F=ma$}!
+\\\\\\\\
+\text{Font}\\\\
+$\begin{array}{|l|l|l|}\hline
+\mathrm{Ab0} {\small \verb! \mathrm!} & \mathbf{Ab0} {\small \verb! \mathbf!} & \mathsf{Ab0} {\small \verb! \mathsf!}\\
+\hline
+\mathnormal{Ab0} {\small \verb! \mathnormal!} & \textbf{Ab0} {\small \verb! \textbf!} & \textsf{Ab0} {\small \verb! \textsf!}\\
+\hline
+\textrm{Ab0} {\small \verb! \textrm!} & \verb!NO \bf! & \verb!NO \sf!\\
+\hline
+\verb!NO \rm! & \verb!NO \bold! & \mathsfit{Ab0} {\small \verb! \mathsfit!}\\
+\hline
+\textnormal{Ab0} {\small \verb! \textnormal!} & \verb!NO \boldsymbol! & \verb!NO \Bbb!\\
+\hline
+\text{Ab0} {\small \verb! \text!} & \verb!NO \bm! & \mathbb{AB} {\small \verb! \mathbb!}\\
+\hline
+\textup{Ab0} {\small \verb! \textup!} & \textmd{Ab0} {\small \verb! \textmd!} & \verb!NO \frak!\\
+\hline
+\mathit{Ab0} {\small \verb! \mathit!} & \mathtt{Ab0} {\small \verb! \mathtt!} & \mathfrak{Ab0} {\small \verb! \mathfrak!}\\
+\hline
+\textit{Ab0} {\small \verb! \textit!} & \texttt{Ab0} {\small \verb! \texttt!} & \mathcal{AB0} {\small \verb! \mathcal!}\\
+\hline
+\it{Ab0} {\small \verb! \it!} & \verb!NO \tt! & \verb!NO \cal!\\
+\hline
+\emph{Ab0} {\small \verb! \emph!} & \texttt{Ab0} {\small \verb! \textbfit!} & \mathscr{AB} {\small \verb! \mathscr!}\\
+\hline
+\end{array}$
+\\\\
+\textdagger Stack font family works partially.
+\\\\\\\\\\\\\\\\\\
+\text{Font Size}
+\\\\
+$\begin{array}{|l|l|}\hline
+{\Huge AB} {\small \verb! \Huge AB!} & {\normalsize AB} {\small \verb! \normalsize AB!}\\
+\hline
+{\huge AB} {\small \verb! \huge AB!} & {\small AB} {\small \verb! \small AB!}\\
+\hline
+{\LARGE AB} {\small \verb!  \LARGE AB!} & {\footnotesize AB} {\small \verb! \footnotesize AB!}\\
+\hline
+{\Large AB} {\small \verb!   \Large AB!} & {\scriptsize AB} {\small \verb!  \scriptsize AB!}\\
+\hline
+{\large AB} {\small \verb!    \large AB!} & {\tiny AB} {\small \verb!   \tiny AB!}\\
+\hline
+\end{array}$
+\\\\\\\\\\
+\text{Style}
+\\\\
+$\begin{array}{|l|l|}\hline
+{\displaystyle\sum_{i=1}^n} & \verb!\displaystyle \sum_{i=1}^n!\\
+\hline
+{\textstyle\sum_{i=1}^n} & \verb!\textstyle \sum_{i=1}^n!\\
+\hline
+{\scriptstyle x} & \verb!\scriptstyle x!\\
+\hline
+{\scriptscriptstyle x} & \verb!\scriptscriptstyle x!\\
+\hline
+\lim\limits_x & \verb!\lim\limits_x!\\
+\hline
+\lim\nolimits_x & \verb!\lim\nolimits_x!\\
+\hline
+\verb!x^2! & \verb.\verb!x^2!.\\
+\hline
+\end{array}$
+\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+\text{\Large Symbols and Punctuation}\\
+$\begin{array}{|l|l|l|}\hline
+\verb!% comment! & \dots  \verb! \dots! & \KaTeX\verb! \KaTeX!\\
+\hline
+\% \verb!  \%! & \cdots \verb! \cdots! & \LaTeX\verb! \LaTeX!\\
+\hline
+\# \verb!  \#! & \ddots \verb! \ddots! & \TeX\verb! \TeX!\\
+\hline
+\& \verb!  \&! & \ldots \verb! \ldots! & \nabla	\verb! \nabla!\\
+\hline
+\_ \verb!   \_! & \vdots \verb!  \vdots! & \infty	\verb! \infty!\\
+\hline
+\text{\textunderscore} \verb!\text{\textunderscore}! & \dotsb \verb!  \dotsb! & \infin \verb! \infin!\\
+\hline
+\text{--} \verb! \text{--}! & \dotsc\verb!  \dotsc! & \checkmark \verb!\checkmark!\\
+\hline
+\text{\textendash} \verb! \text{\textendash}! & \dotsi\verb!  \dotsi! & \dag \verb! \dag!\\
+\hline
+\text{---} \verb! \text{---}! & \dotsm\verb!  \dotsm! & \dagger \verb! \dagger!\\
+\hline
+\text{\textemdash} \verb! \text{\textemdash}! & \dotso\verb! \dotso! & \text{\textdagger} {\tiny \verb! \text{\textdagger}!}\\
+\hline
+\text{\textasciitilde}  {\small \verb! \text{\textasciitilde}!} & \sdot\verb! \sdot! & \ddag \verb! \ddag!\\
+\hline
+\text{\textasciicircum} {\small \verb! \text{\textasciicircum}!} & \mathellipsis {\tiny \verb! \mathellipsis!} & \ddagger \verb! \ddagger!\\
+\hline
+` \verb!  `! & \text{\textellipsis} {\tiny \verb! \text{\textellipsis}!} & \text{\textdaggerdbl} {\tiny\verb! \text{\textdaggerdbl}!}\\
+\hline
+\text{\textquoteleft} \verb! \text{\textquoteleft}! & \Box \verb! \Box! & \Dagger \verb! \Dagger!\\
+\hline
+\lq \verb!  \lq! & \square {\verb! \square!} & \angle {\verb! \angle!}\\
+\hline
+\text{\textquoteright} \verb!  text{\textquoteright}! & \blacksquare {\small\verb! \blacksquare!} & \measuredangle {\tiny\verb! \measuredangle!}\\
+\hline
+\rq \verb!  \rq! & \triangle {\verb!\triangle!} & \sphericalangle {\tiny\verb! \sphericalangle!}\\
+\hline
+\text{\textquotedblleft} {\small \verb! \text{\textquotedblleft}!} & \triangledown {\tiny\verb! \triangledown!} & \bot \verb! \bot!\\
+\hline
+" \verb! "! & \triangleleft {\tiny\verb! \triangleleft!} & \top \verb! \top!\\
+\hline
+\text{\textquotedblright} {\small \verb! \text{\textquotedblright}!} & \triangleright {\tiny\verb! \triangleright!} & \$ \verb! \$!\\
+\hline
+\colon \verb! \colon! & \bigtriangledown {\tiny\verb! \bigtriangledown!} & \text{\$} \verb! \text{\$}!\\
+\hline
+\backprime \verb! \backprime! & \bigtriangleup {\tiny\verb! \bigtriangleup!} & \pounds \verb! \pounds!\\
+\hline
+\prime \verb! \prime! & \blacktriangle {\tiny\verb! \blacktriangle!} & \mathsterling {\tiny\verb! \mathsterling!}\\
+\hline
+\verb!NO \text{\textless}! & \blacktriangledown {\tiny\verb! \blacktriangledown!} & \text{\pounds} {\tiny\verb! \text{\pounds}!}\\
+\hline
+\verb!NO \text{\textgreater}! & \blacktriangleleft {\tiny\verb! \blacktriangleleft!} & \text{\yen} {\small\verb! \text{\yen}!}\\
+\hline
+\text{\textbar}{\small \verb! \text{\textbar}!} & \blacktriangleright {\tiny\verb! \blacktriangleright!} & \surd \verb! \surd!\\
+\hline
+\text{\textbardbl} {\small \verb! \text{\textbardbl}!} & \diamond \verb! \diamond! & \degree \verb! \degree!\\
+\hline
+\text{\textbraceleft} {\small \verb! \text{\textbraceleft}!} & \Diamond \verb! \Diamond! & \text{\textdegree} {\tiny \verb! \text{\textdegree}!}\\
+\hline
+\text{\textbraceright} {\small \verb! \text{\textbraceright}!} & \lozenge \verb! \lozenge! & \mho \verb! \mho!\\
+\hline
+\text{\backslash} {\small \verb! \text{\backslash}!} & \verb!NO! {\tiny \verb! \blacklozenge!} & \verb!NO!{\small \verb! \diagdown!}\\
+\hline
+\text{\P} \verb! \text{\P}! & \star \verb!  \star! & \verb!NO!{\small \verb! \diagup!}\\
+\hline
+\text{\S} \verb! \text{\S}! & \verb!NO \bigstar!& \flat \verb! \flat! \\
+\hline
+\text{\sect} \verb! \text{\sect}! & \clubsuit \verb! \clubsuit! & \natural\verb! \natural!\\
+\hline
+\copyright \verb! \copyright! & \clubs \verb! \clubs! & \sharp \verb! \sharp!\\
+\hline
+\circledR \verb! \circledR! & \diamondsuit\verb! \diamondsuit! & \heartsuit {\small\verb! \heartsuit!}\\
+\hline
+\verb!NO \circledS! & \spadesuit \verb! \spadesuit! & \spades \verb! \spades!\\
+\hline
+\verb!NO \textcircled! & \maltese \verb! \maltese! & \verb!NO \minuso!\\
+\hline
+\end{array}$

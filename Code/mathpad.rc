@@ -1,0 +1,495 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "atlres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""atlres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTDLG DIALOGEX 0, 0, 129, 102
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About MathPad"
+FONT 10, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CTEXT           "MathPad v1.0-beta\nLaTex Mini-Editor\n© Celicom, 2026",IDC_STATIC,14,20,104,30
+    CTEXT           "MathBox ABI: 1",IDC_MATHBOXABI_VERSION,10,50,104,11
+    ICON            IDR_MAINFRAME, IDC_STATIC, 55,61,20,20
+    GROUPBOX        "",IDC_STATIC,7,7,115,85
+END
+
+IDD_PAGE_EDITOR DIALOGEX 0, 0, 252, 218
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 10, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "Colors",IDC_STATIC,7,7,238,42
+    LTEXT           "Background:",IDC_STATIC,15,21,45,8
+    EDITTEXT        IDC_EDIT_BKG_COLOR,65,19,50,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_EDIT_BKG_COLOR_BTN,120,19,40,12,BS_BITMAP | BS_NOTIFY
+    LTEXT           "Text:",IDC_STATIC,15,36,45,8
+    EDITTEXT        IDC_EDIT_TEXT_COLOR,65,34,50,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_EDIT_TEXT_COLOR_BTN,120,34,40,12,BS_BITMAP | BS_NOTIFY
+    GROUPBOX        "Font",IDC_STATIC,7,52,238,42
+    LTEXT           "Name:",IDC_STATIC,15,66,45,8
+    COMBOBOX        IDC_EDIT_FONT_NAME,65,64,120,100,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Size:",IDC_STATIC,15,81,45,8
+    EDITTEXT        IDC_EDIT_FONT_SIZE,65,79,50,12,ES_AUTOHSCROLL
+    GROUPBOX        "Options",IDC_STATIC,7,97,238,55
+    CONTROL         "Word Wrap",IDC_EDIT_WORD_WRAP_CHK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,111,80,10
+    CONTROL         "Syntax Highlighting",IDC_EDIT_SYNTAX_HIGHLIGHT_CHK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,124,80,10
+    CONTROL         "Open Last Document on Startup",IDC_EDIT_OPENLASTDOC_CHK,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,137,160,10
+END
+
+IDD_PAGE_MATHBOXVIEW DIALOGEX 0, 0, 252, 218
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 10, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "View",IDC_STATIC,7,7,238,40
+    LTEXT           "Background Color:",IDC_STATIC,15,21,65,8
+    EDITTEXT        IDC_VIEW_BKG_COLOR,85,19,50,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_VIEW_BKG_COLOR_BTN,140,19,20,12,BS_BITMAP | BS_NOTIFY
+    GROUPBOX        "Page Size",IDC_STATIC,7,52,238,65
+    LTEXT           "Paper:",IDC_STATIC,15,66,45,8
+    COMBOBOX        IDC_PAGE_SIZE_COMBO,65,64,120,100,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Width (pts):",IDC_STATIC,15,83,45,8
+    EDITTEXT        IDC_PAGE_WIDTH,65,81,70,12,ES_AUTOHSCROLL
+    LTEXT           "Height (pts):",IDC_STATIC,15,100,45,8
+    EDITTEXT        IDC_PAGE_HEIGHT,65,98,70,12,ES_AUTOHSCROLL
+    GROUPBOX        "Page Margins",IDC_STATIC,7,122,238,50
+    LTEXT           "Horizontal (pts):",IDC_STATIC,15,136,60,8
+    EDITTEXT        IDC_PAGE_MARGIN_X,85,134,50,12,ES_AUTOHSCROLL
+    LTEXT           "Vertical (pts):",IDC_STATIC,15,153,60,8
+    EDITTEXT        IDC_PAGE_MARGIN_Y,85,151,50,12,ES_AUTOHSCROLL
+    GROUPBOX        "Layout",IDC_STATIC,7,177,238,34
+    LTEXT           "Vertical Gap (pts):",IDC_STATIC,15,191,65,8
+    EDITTEXT        IDC_PAGE_VERT_GAP,85,189,50,12,ES_AUTOHSCROLL
+END
+
+IDD_PAGE_MATHBOXLIB DIALOG 0, 0, 252, 218
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 10, "MS Shell Dlg"
+BEGIN
+    GROUPBOX        "Macros",IDC_STATIC,7,7,238,30
+    LTEXT           "File:",IDC_STATIC,15,21,30,8
+    EDITTEXT        IDC_MB_MACROS,50,19,188,12,ES_AUTOHSCROLL | ES_READONLY
+    GROUPBOX        "Font",IDC_STATIC,7,42,238,30
+    LTEXT           "Size (pts):",IDC_STATIC,15,56,45,8
+    EDITTEXT        IDC_MB_FONT_SIZE,65,54,70,12,ES_AUTOHSCROLL
+    GROUPBOX        "Colors",IDC_STATIC,7,77,238,55
+    LTEXT           "Background:",IDC_STATIC,15,91,45,8
+    EDITTEXT        IDC_MB_BKG_COLOR,65,89,50,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_MB_BKG_COLOR_BTN,120,89,20,12,BS_BITMAP | BS_NOTIFY
+    LTEXT           "Text:",IDC_STATIC,15,108,45,8
+    EDITTEXT        IDC_MB_TEXT_COLOR,65,106,50,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "",IDC_MB_TEXT_COLOR_BTN,120,106,20,12,BS_BITMAP | BS_NOTIFY
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_ABOUTDLG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 7
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 95
+    END
+
+    IDD_PAGE_EDITOR, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 245
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 211
+    END
+
+    IDD_PAGE_MATHBOXVIEW, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 245
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 211
+    END
+
+    IDD_PAGE_MATHBOXLIB, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 245
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 211
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_MAINFRAME ACCELERATORS
+BEGIN
+    "A",            ID_EDIT_SELECT_ALL,     VIRTKEY, CONTROL, NOINVERT
+    "C",            ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    "F",            ID_EDIT_FIND,           VIRTKEY, CONTROL, NOINVERT
+    "H",            ID_EDIT_REPLACE,        VIRTKEY, CONTROL, NOINVERT
+    "N",            ID_FILE_NEW,            VIRTKEY, CONTROL, NOINVERT
+    "O",            ID_FILE_OPEN,           VIRTKEY, CONTROL, NOINVERT
+    "P",            ID_FILE_PRINT,          VIRTKEY, CONTROL, NOINVERT
+    "R",            ID_EDIT_REPLACE,        VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_FILE_SAVE,           VIRTKEY, CONTROL, NOINVERT
+    "T",            ID_VIEW_MATH,           VIRTKEY, CONTROL, NOINVERT
+    "E",            ID_VIEW_SETTINGS,       VIRTKEY, CONTROL, NOINVERT
+    "V",            ID_EDIT_PASTE,          VIRTKEY, CONTROL, NOINVERT
+    VK_BACK,        ID_EDIT_UNDO,           VIRTKEY, ALT, NOINVERT
+    VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT, NOINVERT
+    VK_F3,          ID_EDIT_REPEAT,         VIRTKEY, NOINVERT
+    VK_F3,          ID_EDIT_REPEAT,         VIRTKEY, SHIFT, NOINVERT
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY, NOINVERT
+    VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT, NOINVERT
+    VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL, NOINVERT
+    VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT, NOINVERT
+    "X",            ID_EDIT_CUT,            VIRTKEY, CONTROL, NOINVERT
+    "Z",            ID_EDIT_UNDO,           VIRTKEY, CONTROL, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\MathPad.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_CONTEXTMENU MENU
+BEGIN
+    POPUP "Popup Menu"
+    BEGIN
+        MENUITEM "&Undo",                       ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t",                        ID_EDIT_CUT
+        MENUITEM "&Copy",                       ID_EDIT_COPY
+        MENUITEM "&Paste",                      ID_EDIT_PASTE
+        MENUITEM "&Delete",                     ID_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "Select &All",                 ID_EDIT_SELECT_ALL
+    END
+END
+
+IDR_MAINFRAME MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
+        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
+        MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
+        MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
+        MENUITEM SEPARATOR
+        MENUITEM "New &Window",                 ID_FILE_NEW_WINDOW
+        MENUITEM SEPARATOR
+        MENUITEM "Pa&ge Setup...",              ID_FILE_PAGE_SETUP
+        MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
+        MENUITEM SEPARATOR
+        POPUP "Recent &Files"
+        BEGIN
+            MENUITEM "(empty)",                     ID_FILE_MRU_FILE1, GRAYED
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_APP_EXIT
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "&Undo\tCtrl+Z",               ID_EDIT_UNDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
+        MENUITEM "&Delete\tDel",                ID_EDIT_CLEAR
+        MENUITEM SEPARATOR
+        MENUITEM "Select &All\tCtrl+A",         ID_EDIT_SELECT_ALL
+        MENUITEM SEPARATOR
+        MENUITEM "&Find\tCtrl+F",               ID_EDIT_FIND
+        MENUITEM "Find &Next\tF3",              ID_EDIT_REPEAT
+        MENUITEM "&Replace\tCtrl+R",            ID_EDIT_REPLACE
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&View Math\tCtrl+T",          ID_VIEW_MATH
+        MENUITEM "&Settings\tCtrl+E",           ID_VIEW_SETTINGS
+        MENUITEM SEPARATOR
+        MENUITEM "&Word Wrap",                  ID_EDIT_WORD_WRAP
+        MENUITEM "Set &Font...",                ID_FORMAT_FONT
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About MathPad",              ID_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Toolbar
+//
+
+IDR_MAINFRAME TOOLBAR 16, 15
+BEGIN
+    BUTTON      ID_FILE_NEW
+    BUTTON      ID_FILE_OPEN
+    BUTTON      ID_FILE_SAVE
+    SEPARATOR
+    BUTTON      ID_FILE_NEW_WINDOW
+    SEPARATOR
+    BUTTON      ID_EDIT_CUT
+    BUTTON      ID_EDIT_COPY
+    BUTTON      ID_EDIT_PASTE
+    SEPARATOR
+    BUTTON      ID_EDIT_FIND
+    BUTTON      ID_EDIT_REPEAT
+    BUTTON      ID_EDIT_REPLACE
+    SEPARATOR
+    BUTTON      ID_FORMAT_FONT
+    SEPARATOR
+    BUTTON      ID_FILE_PRINT
+    BUTTON      ID_VIEW_SETTINGS
+    BUTTON      ID_APP_ABOUT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION 1,0,0,1
+ PRODUCTVERSION 1,0,0,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x1L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "Microsoft"
+            VALUE "FileDescription", "MathPad LaTex Mini-Editor"
+            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "InternalName", "MathPad"
+            VALUE "LegalCopyright", "Copyright © Celicom, 2007-2026"
+            VALUE "OriginalFilename", "MathPad.EXE"
+            VALUE "ProductName", "MathPad Application"
+            VALUE "ProductVersion", "1, 0, 0, 1"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_PAGE_EDITOR AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_PAGE_MATHBOXVIEW AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_ABOUTDLG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDR_MAINFRAME           "MathPad v1.0-beta"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_NEW             "Create a new document\nNew"
+    ID_FILE_OPEN            "Open an existing document\nOpen"
+    ID_FILE_CLOSE           "Close the active document\nClose"
+    ID_FILE_SAVE            "Save the active document\nSave"
+    ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
+    ID_FILE_PAGE_SETUP      "Change the printing options\nPage Setup"
+    ID_FILE_PRINT_SETUP     "Change the printer and printing options\nPrint Setup"
+    ID_FILE_PRINT           "Print the active document\nPrint"
+END
+
+STRINGTABLE
+BEGIN
+    ID_APP_ABOUT            "Display program information, version number and copyright\nAbout"
+    ID_APP_EXIT             "Quit the application; prompts to save documents\nExit"
+END
+
+STRINGTABLE
+BEGIN
+    ID_NEXT_PANE            "Switch to the next window pane\nNext Pane"
+    ID_PREV_PANE            "Switch back to the previous window pane\nPrevious Pane"
+END
+
+STRINGTABLE
+BEGIN
+    ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
+END
+
+STRINGTABLE
+BEGIN
+    ID_EDIT_CLEAR           "Erase the selection\nErase"
+    ID_EDIT_CLEAR_ALL       "Erase everything\nErase All"
+    ID_EDIT_COPY            "Copy the selection and put it on the Clipboard\nCopy"
+    ID_EDIT_CUT             "Cut the selection and put it on the Clipboard\nCut"
+    ID_EDIT_FIND            "Find the specified text\nFind"
+    ID_EDIT_PASTE           "Insert Clipboard contents\nPaste"
+    ID_EDIT_REPEAT          "Repeat the last find\nFind Next"
+    ID_EDIT_REPLACE         "Replace specific text with different text\nReplace"
+    ID_EDIT_SELECT_ALL      "Select the entire document\nSelect All"
+    ID_EDIT_UNDO            "Undo the last action\nUndo"
+    ID_EDIT_REDO            "Redo the previously undone action\nRedo"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FILE_NEW_WINDOW      "Open a new window\nNew Window"
+END
+
+STRINGTABLE
+BEGIN
+    ID_FORMAT_FONT          "Set text font\nSet Font"
+END
+
+STRINGTABLE
+BEGIN
+    ID_EDIT_WORD_WRAP       "Toggle word wrap mode\nWord Wrap"
+    ID_VIEW_MATH            "View Math Doc\nMath Doc"
+    ID_VIEW_SETTINGS        "View Settings\nSettings"
+END
+
+STRINGTABLE
+BEGIN
+    ATL_IDS_SCSIZE          "Change the window size"
+    ATL_IDS_SCMOVE          "Change the window position"
+    ATL_IDS_SCMINIMIZE      "Reduce the window to an icon"
+    ATL_IDS_SCMAXIMIZE      "Enlarge the window to full size"
+    ATL_IDS_SCNEXTWINDOW    "Switch to the next document window"
+    ATL_IDS_SCPREVWINDOW    "Switch to the previous document window"
+    ATL_IDS_SCCLOSE         "Close the active window and prompts to save the documents"
+END
+
+STRINGTABLE
+BEGIN
+    ATL_IDS_SCRESTORE       "Restore the window to normal size"
+    ATL_IDS_SCTASKLIST      "Activate Task List"
+END
+
+STRINGTABLE
+BEGIN
+    ATL_IDS_MRU_FILE        "Open this document"
+    ID_ROW_PANE             "Row: 99999"
+    ID_COL_PANE             "Col: 99999"
+END
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
