@@ -317,8 +317,9 @@
     </CustomBuildStep>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Macros.mth" />
-    <None Include="..\MathPad.cfg" />
+    <None Include="..\Bin\Macros.mth" />
+    <None Include="..\Bin\MathPad.cfg" />
+    <None Include="..\Bin\TestDoc.mth" />
     <None Include="..\Samples\2601.00713v1_page5.pdf" />
     <None Include="..\Samples\MathBoxV1.1.pdf" />
     <None Include="..\Samples\SamplesDescription.md" />
@@ -327,7 +328,6 @@
   <ItemGroup>
     <Text Include="..\Samples\2601.00713v1_page5.txt" />
     <Text Include="..\Samples\MathBoxV1.1.txt" />
-    <Text Include="..\TestDoc.mth" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\mathpad.ico" />

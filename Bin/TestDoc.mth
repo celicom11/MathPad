@@ -1,50 +1,31 @@
-      In [21], the recurrence relations of the proposition 2.1 were called \emph{rectangular} because their\\
-r.h.s.  contains monodromy  matrix elements  from a rectangular  domain of  the  monodromy\\
-matrix, see section 8.\\
+%% paper = A4
+%% margins = 72,54
+%% fontsize = 12.0pt
+%% textcolor = #000060
 
-    The second property can be viewed as a dual version of  the  previous one since it can be\\
-used to prove the recurrence relations.\\
-\\
-\textbf{Proposition 2.2.} \textsl{Let $\mathbb{B}(\bar{t})$ be an off-shell Bethe vector.  Then, the action of the monodromy\\
-matrix entries reads}\\
-$$\quad\  T_{i,j}(z)\sdot \mathbb{B}(\bar{t}) = \lambda_n(z)\mathit{\mu}^n_{n'}(z;\bar{t})
-\sum_{part\;\bar{w}^s} \mathbb{B}(\bar{w}_\mathrm{II})
-\frac{\Gamma_i(\bar{w}_\mathrm{I})}{\mathit{\psi}_{n'}(z;\bar{w}_\mathrm{I})}\;
-\frac{\bar{\Gamma}_j(\bar{w}_\mathrm{III})}{\mathit{\phi}_n(z;\bar{w}_\mathrm{III})}\;
-\Omega(\bar{w}_\mathrm{I},\bar{w}_\mathrm{II},\bar{w}_\mathrm{III}) \alpha(\bar{w}_\mathrm{III}),$$\\
-\emph{where} $\Gamma_i(\bar{w}_\mathrm{I}), \mathit{\psi}_{n'}(z;\bar{w}_\mathrm{I}), \bar{\Gamma}_j(\bar{w}_\mathrm{III})$ 
-\emph{and $\mathit{\phi}_n(z;\bar{w}_\mathrm{III})$
-are rational fanctions, see propositions 4.1 and\\
-6.1}\\
-\textbf{Corollary 2.1.} \emph{The off-shell Bethe vectors have definite colors:}\\
-$$\kern{14.5em} \mathfrak{q}_a \mathbb{B}(\bar{t}) = \left|\bar{t^a}\right| \mathbb{B}(\bar{t}) ,\quad a \in J_\mathfrak{g}\;.$$\\
-     The next property justifies the name off-shell Bethe vectors we use in the definition 2.1:\\\\
-\textbf{Proposition 2.3.} \emph{Let $\mathbb{B}(\bar{t})$ be an off-shell Bethe vector. If the Bethe equations}\\
-$$\kern{14em}\alpha_a(\bar{t}^a_\mathrm{I}) =
-\frac{\Omega^R_a(\bar{t}_\mathrm{I}, \bar{t}_\mathrm{II})}{\Omega^L_a(\bar{t}_\mathrm{II},\bar{t}_\mathrm{I})},\quad\quad a \in J_\mathfrak{g}$$\\
-\emph{are obeyed, $\mathbb{B}(\bar{t})$ is an eigenvector of the transfer matrix $\mathscr{T}_{\kern{-1ex}\mathfrak{g}}(z) = \mathrm{tr} T(z)$:}\\
-$$\kern{14em}\mathscr{T}_{\kern{-1ex}\mathfrak{g}}(z)\mathbb{B}(\bar{t}) = \mathit{\tau}_\mathfrak{g}(z;\bar{t})\mathbb{B}(\bar{t})\,.$$\\
-\emph{Moreover, the on-shell Bethe vectors are also highest weight vectors for the $\mathfrak{g}$ algebra:}\\
-$$\kern{14.5em} \mathfrak{T}_a \mathbb{B}(\bar{t}) = 0,\quad a \in J_\mathfrak{g}\;.$$\\
-\emph{The explicit form of the eigenvalues are given in (4.27), (7.10), (7.12) and (7.13).}\\\\
-\quad The next proposition allows to build Bethe vectors for composite models. It is usually called\\
-the coproduct formula for off-shell Bethe vectors.\\\\
-\textbf{Proposition 2.4.} \emph{Let $\mathbb{B}^{[2]}(\bar{t})$ and $\mathbb{B}^{[1]}(\bar{t})$ be two off-shell Bethe vectors obeying the definition 2.1\\
-for two different commuting monodromy matrices $T^{[2]}(u)$ and $T^{[1]}(u)$ respectively. Then, the\\
-composed Bethe vector}\\
-$$\kern{10em} \mathbb{B}^{[2,1]}(\bar{t}) = \sum_\mathrm{part} \Omega(\bar{t}_{\mathrm{I}},\bar{t}_{\mathrm{II}})
-	\mathbb{B}^{[2]}(\bar{t}_{\mathrm{I}}) \mathbb{B}^{[1]}(\bar{t}_{\mathrm{II}}) \prod_{s \in J_\mathfrak{g}}\alpha^{[2]}_s(\bar{t}^s_{\mathrm{II}})
+\text{\LARGE Hello, \LaTeX\ Math!}\\\\
+
+A classic identity combining roots, integrals, and fractions:
+$$
+\int_0^\infty \sqrt{\frac{\pi}{2}}\, e^{-x^2}\, dx
+  = \frac{\sqrt{\pi}}{2}
 $$\\
-\emph{also obeys the definition 2.1 for the composite model defined by the monodromy matrix}\\
-$$\kern{7em}  T^{[2,1]}(z) = T^{[2]}(u) T^{[1]}(u), \textit{      i.e.   }  T^{[2,1]}_{i,j}(z) = \sum^n_{k=n'}T^{[2]}_{i,k}(u)T^{[1]}_{k,j}(u) \, . $$
-\emph{The rational function $\Omega$ is defined in (9.2).}\\\\\\
-\kern{20em}5 
 
+Nested radicals and a fraction inside \textbf{left/right} brackets:
+$$
+\left( \frac{1 + \sqrt{1 + 4\sqrt{x}}}{2} \right)^2
+  = 1 + \sqrt{x} + \frac{1}{4}\cdot\left(1 + 4\sqrt{x} - 1\right)
+$$\\
 
+A definite integral with a complex integrand:
+$$
+\int_a^b \left[ \frac{f(x)}{g(x)} + \sqrt[3]{h(x)} \right] dx
+  \;\leq\;
+  \frac{1}{b-a}\int_a^b f(x)\,dx + \sqrt[3]{\frac{1}{b-a}\int_a^b h(x)\,dx}
+$$\\
 
-
-
-
-
-
-
+Euler's formula and its consequence:
+$$
+e^{i\pi} + 1 = 0 \qquad \Longleftrightarrow \qquad
+e^{i\theta} = \cos\theta + i\sin\theta
+$$
