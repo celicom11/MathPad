@@ -80,3 +80,8 @@ The configuration file uses a simple `key = value` format. Lines starting with `
 
 ### `[MRU List]`
 Contains recently used files.
+
+## Limitations
+- **ASCII input only** — extended Unicode characters in the source text are not supported
+- Windows 10/11 x64 only
+- No installer — xcopy deployment
