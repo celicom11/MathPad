@@ -1,7 +1,7 @@
 %%%%%%%%MathPad Settings%%%%%%
 %% paper = A4
-%% margins = 54,35
-%% fontsize = 16.0pt
+%% margins = 56,34
+%% fontsize = 16.5pt
 %% textcolor = #004E00 %dark green
 %
 \text{\huge Supported Functions}\\\\
@@ -37,7 +37,7 @@ a^{\prime} \verb! a^{\prime}! & \utilde{AB} \verb! \utilde{AB}! & \underparen{AB
 \hline
 \end{array}
 $
-\\\\
+\\\\\\
 \text{\Large Delimiters}\\\\
 $
 \begin{array}{|l|l|l|l|}
@@ -166,7 +166,7 @@ $\begin{array}{|l|l|l|l|}\hline
 \reals {\small \verb! \reals!} & \text{\oe} {\small \verb! \text{\oe}!}\\
 \hline
 \end{array}$
-\\\\\\
+\\\\\\\\\\
 \text{\Large Layout}
 \\\\
 \text{Annotation}
@@ -278,7 +278,7 @@ $\begin{array}{|l|l|l|l|}\hline
 \cap {\small \verb! \cap!} & \doublecup {\small \verb! \doublecup!} & \pm {\small \verb! \pm!} & \wr {\small \verb! \wr!}\\
 \hline
 \end{array}$
-\\\\\\\\
+\\\\\\\\\\
 Fractions and Binomials
 \\\\
 $\begin{array}{|l|l|l|}\hline
@@ -333,7 +333,7 @@ $\begin{array}{|l|l|l|}\hline
 \end{array}$
 \\\\
 Sqrt: $\sqrt{\sqrt[2]{\sqrt[3]{\sqrt[4]{x}}}}$\verb!   $\sqrt{\sqrt[2]{\sqrt[3]{\sqrt[4]{x}}}}$! 
-\\\\\\\\\\\\\\\\
+\\\\\\\\\\\\\\\\\\
 \text{\Large Relations}
 \\\\
 $\begin{array}{|l|l|l|}\hline
@@ -402,7 +402,7 @@ $\begin{array}{|l|l|l|}\hline
 \Doteq {\small \verb! \Doteq!} & \leqslant {\small \verb! \leqslant!} & \verb!NO \smallsmile!\\
 \hline
 \end{array}$
-\\\\\\\\\\
+\\\\\\\\\\\\\\
 \text{\Large Relations cont.}
 \\\\
 $\begin{array}{|l|l|l|}\hline
@@ -474,7 +474,7 @@ $\begin{array}{|l|l|l|}\hline
 {\small \verb!NO \varsupsetneqq!}\\
 \hline
 \end{array}$
-\\\\\\\\
+\\\\\\\\\\\\
 \text{\Large Arrows}
 \\\\
 $\begin{array}{|l|l|l|}\hline
@@ -544,7 +544,7 @@ $\begin{array}{|l|l|l|}\hline
 \\\\
 \text{NO Extensible Arrows}\\
 \text{NO Bra-ket Notation}
-\\\\\\\\\\\\
+\\\\\\\\\\\\\\
 \text{\Large Style, Color, Size, and Font}\\\\\\
 \text{Class Assignment}\\\\
 \verb!\mathbin \mathclose \mathinner \mathop!\\
@@ -580,7 +580,7 @@ $\begin{array}{|l|l|l|}\hline
 \end{array}$
 \\\\
 \textdagger Stack font family works partially.
-\\\\\\\\\\\\\\\\\\
+\\\\\\\\\\\\\\\\\\\\
 \text{Font Size}
 \\\\
 $\begin{array}{|l|l|}\hline
