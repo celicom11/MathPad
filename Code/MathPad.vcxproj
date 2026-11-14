@@ -340,6 +340,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\mathpad.ico" />
+    <Image Include="res\Toolbar32_Alpha.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

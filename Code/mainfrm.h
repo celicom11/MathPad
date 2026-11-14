@@ -12,6 +12,9 @@
 #include "CfgReader.h"
 #include "ConfigMRUList.h"
 #include "SettingsDlg.h"
+#include <wincodec.h>
+
+#pragma comment(lib, "windowscodecs.lib")
 
 #define FILE_MENU_POSITION	0
 #define RECENT_MENU_POSITION	10
@@ -43,6 +46,7 @@ public:
    CSkiaRenderer           m_skr;
 
    CCommandBarCtrl         m_CmdBar;
+   CImageListManaged       m_ToolbarImages; //owned; toolbar borrows until window destruction
    CConfigMRUList          m_mru;
    CMultiPaneStatusBarCtrl m_sbar;
    CEditView               m_EditView;
@@ -131,7 +135,11 @@ public:
       // remove old menu
       SetMenu(NULL);
 
-      HWND hWndToolBar = CreateSimpleToolBarCtrl(m_hWnd, IDR_MAINFRAME, FALSE, ATL_SIMPLE_TOOLBAR_PANE_STYLE);
+      HWND hWndToolBar = CreateToolbar_();
+      if (!hWndToolBar) {
+         MessageBox(L"Could not load the 32-pixel toolbar.", L"Error", MB_OK | MB_ICONERROR);
+         return -1;
+      }
 
       CreateSimpleReBar(ATL_SIMPLE_REBAR_NOBORDER_STYLE);
       AddSimpleReBarBand(hWndCmdBar);
@@ -422,7 +430,28 @@ public:
 
    LRESULT OnFileNewWindow(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
    {
-      ::PostThreadMessage(_Module.m_dwMainThreadID, WM_USER, 0, 0L);
+      vector<wchar_t> vPath(32768);
+      const DWORD nLength = ::GetModuleFileNameW(nullptr, vPath.data(), (DWORD)vPath.size());
+      if (!nLength || nLength >= vPath.size()) {
+         MessageBox(L"Could not determine the MathPad executable path.", L"Error", MB_OK | MB_ICONERROR);
+         return 0;
+      }
+      wstring sCommandLine = L"\"" + wstring(vPath.data(), nLength) + L"\"";
+      STARTUPINFOW startupInfo = {};
+      startupInfo.cb = sizeof(startupInfo);
+      startupInfo.dwFlags = STARTF_USESHOWWINDOW;
+      startupInfo.wShowWindow = SW_SHOWNORMAL;
+      PROCESS_INFORMATION processInfo = {};
+      if (!::CreateProcessW(vPath.data(), sCommandLine.data(), nullptr, nullptr, FALSE, 0,
+                            nullptr, m_sAppDir.c_str(), &startupInfo, &processInfo)) {
+         const DWORD nError = ::GetLastError();
+         wchar_t wszError[160];
+         swprintf_s(wszError, L"Could not open a new MathPad window (Windows error %lu).", nError);
+         MessageBox(wszError, L"Error", MB_OK | MB_ICONERROR);
+         return 0;
+      }
+      ::CloseHandle(processInfo.hThread);
+      ::CloseHandle(processInfo.hProcess);
       return 0;
    }
 
@@ -564,7 +593,7 @@ public:
    }
    LRESULT OnFilePrint(WORD, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/) {
       if (!m_MathBoxView.CanPrint()) {
-         MessageBox(L"Printing is not yet supported by the Skia renderer.", L"MathPad", MB_OK | MB_ICONINFORMATION);
+         MessageBox(L"PDF export is not implemented yet.", L"MathPad", MB_OK | MB_ICONINFORMATION);
          return 0;
       }
       UINT nPageCount = m_MathBoxView.PageCount();
@@ -662,6 +691,95 @@ public:
    }
 
 private:
+//INTERNALS
+   HWND CreateToolbar_() {
+      HINSTANCE hInstance = _Module.GetResourceInstance();
+      HRSRC hResource = ::FindResourceW(hInstance, MAKEINTRESOURCEW(IDR_MAINFRAME), RT_TOOLBAR);
+      if (!hResource) { return nullptr; }
+      const DWORD nBytes = ::SizeofResource(hInstance, hResource);
+      const WORD* pData = static_cast<const WORD*>(::LockResource(::LoadResource(hInstance, hResource)));
+      // TOOLBAR resource: version, image width/height, item count, commands.
+      if (!pData || nBytes < 4 * sizeof(WORD) || pData[0] != 1 ||
+          nBytes < (4u + pData[3]) * sizeof(WORD)) { return nullptr; }
+      vector<TBBUTTON> vButtons(pData[3]);
+      int nImages = 0;
+      for (size_t nIdx = 0; nIdx < vButtons.size(); ++nIdx) {
+         const WORD nCommand = pData[4 + nIdx];
+         TBBUTTON& button = vButtons[nIdx];
+         button.idCommand = nCommand;
+         button.fsState = TBSTATE_ENABLED;
+         button.fsStyle = nCommand ? BTNS_BUTTON : BTNS_SEP;
+         button.iBitmap = nCommand ? nImages++ : 8;
+      }
+      if (!LoadToolbarImages_(nImages)) { return nullptr; }
+      CToolBarCtrl toolbar;
+      if (!toolbar.Create(m_hWnd, rcDefault, nullptr, ATL_SIMPLE_TOOLBAR_PANE_STYLE, 0, ATL_IDW_TOOLBAR)) {
+         return nullptr;
+      }
+      toolbar.SetButtonStructSize();
+      toolbar.SetBitmapSize(32, 32);
+      toolbar.SetButtonSize(40, 40);
+      toolbar.SetImageList(m_ToolbarImages);
+      if (!toolbar.AddButtons((int)vButtons.size(), vButtons.data())) {
+         toolbar.DestroyWindow();
+         return nullptr;
+      }
+      toolbar.AutoSize();
+      return toolbar;
+   }
+
+   bool LoadToolbarImages_(int nImages) {
+      HINSTANCE hInstance = _Module.GetResourceInstance();
+      HRSRC hResource = ::FindResourceW(hInstance, MAKEINTRESOURCEW(IDR_TOOLBAR32), RT_RCDATA);
+      if (!hResource || nImages <= 0) { return false; }
+      BYTE* pData = static_cast<BYTE*>(::LockResource(::LoadResource(hInstance, hResource)));
+      const DWORD nBytes = ::SizeofResource(hInstance, hResource);
+      if (!pData || !nBytes) { return false; }
+      CComPtr<IWICImagingFactory> pFactory;
+      HRESULT hRes = pFactory.CoCreateInstance(CLSID_WICImagingFactory);
+      if (FAILED(hRes)) { return false; }
+      CComPtr<IWICStream> pStream;
+      hRes = pFactory->CreateStream(&pStream);
+      if (FAILED(hRes)) { return false; }
+      hRes = pStream->InitializeFromMemory(pData, nBytes); //borrows the embedded resource
+      if (FAILED(hRes)) { return false; }
+      CComPtr<IWICBitmapDecoder> pDecoder;
+      hRes = pFactory->CreateDecoderFromStream(pStream, nullptr, WICDecodeMetadataCacheOnLoad, &pDecoder);
+      if (FAILED(hRes)) { return false; }
+      CComPtr<IWICBitmapFrameDecode> pFrame;
+      hRes = pDecoder->GetFrame(0, &pFrame);
+      if (FAILED(hRes)) { return false; }
+      UINT nWidth = 0, nHeight = 0;
+      hRes = pFrame->GetSize(&nWidth, &nHeight);
+      if (FAILED(hRes) || nWidth != (UINT)nImages * 32 || nHeight != 32) { return false; }
+      CComPtr<IWICFormatConverter> pConverter;
+      hRes = pFactory->CreateFormatConverter(&pConverter);
+      if (FAILED(hRes)) { return false; }
+      hRes = pConverter->Initialize(pFrame, GUID_WICPixelFormat32bppPBGRA, WICBitmapDitherTypeNone,
+                                    nullptr, 0, WICBitmapPaletteTypeCustom);
+      if (FAILED(hRes)) { return false; }
+      BITMAPINFO bitmapInfo = {};
+      bitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+      bitmapInfo.bmiHeader.biWidth = (LONG)nWidth;
+      bitmapInfo.bmiHeader.biHeight = -(LONG)nHeight;
+      bitmapInfo.bmiHeader.biPlanes = 1;
+      bitmapInfo.bmiHeader.biBitCount = 32;
+      bitmapInfo.bmiHeader.biCompression = BI_RGB;
+      void* pBits = nullptr;
+      CBitmap bitmap;
+      bitmap.Attach(::CreateDIBSection(nullptr, &bitmapInfo, DIB_RGB_COLORS, &pBits, nullptr, 0));
+      if (bitmap.IsNull() || !pBits) { return false; }
+      hRes = pConverter->CopyPixels(nullptr, nWidth * 4, nWidth * nHeight * 4, static_cast<BYTE*>(pBits));
+      if (FAILED(hRes)) { return false; }
+      CImageListManaged images;
+      if (!images.Create(32, 32, ILC_COLOR32, nImages, 0) ||
+          images.Add(bitmap, static_cast<HBITMAP>(nullptr)) != 0 || images.GetImageCount() != nImages) {
+         return false;
+      }
+      m_ToolbarImages.Attach(images.Detach());
+      return true;
+   }
+
    static bool _FileExists(PCWSTR szPath) {
       return ::GetFileAttributesW(szPath) != INVALID_FILE_ATTRIBUTES;
    }

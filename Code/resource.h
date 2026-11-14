@@ -8,6 +8,7 @@
 #define IDD_PAGE_MATHBOXLIB             107
 #define IDR_MAINFRAME                   128
 #define IDR_CONTEXTMENU                 130
+#define IDR_TOOLBAR32                   131
 #define ID_FILE_NEW_WINDOW              32771
 #define ID_EDIT_WORD_WRAP               40003
 #define ID_VIEW_MATH                    40004

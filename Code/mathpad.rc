@@ -247,7 +247,7 @@ BEGIN
         MENUITEM "New &Window",                 ID_FILE_NEW_WINDOW
         MENUITEM SEPARATOR
         MENUITEM "Pa&ge Setup...",              ID_FILE_PAGE_SETUP
-        MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
+        MENUITEM "Save to &PDF...\tCtrl+P",           ID_FILE_PRINT
         MENUITEM SEPARATOR
         POPUP "Recent &Files"
         BEGIN
@@ -321,6 +321,7 @@ END
 //
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+IDR_TOOLBAR32           RCDATA                  "res\\Toolbar32_Alpha.png"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -402,7 +403,7 @@ BEGIN
     ID_FILE_SAVE_AS         "Save the active document with a new name\nSave As"
     ID_FILE_PAGE_SETUP      "Change the printing options\nPage Setup"
     ID_FILE_PRINT_SETUP     "Change the printer and printing options\nPrint Setup"
-    ID_FILE_PRINT           "Print the active document\nPrint"
+    ID_FILE_PRINT           "Save the active document as a PDF file\nSave to PDF"
 END
 
 STRINGTABLE
