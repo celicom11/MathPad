@@ -1,7 +1,9 @@
 #pragma once
-#include "MathBoxHost\D2DRenderer.h"
-#include "MathBoxHost\D2DFontManager.h"
 #include "MathBoxHost\MathBoxHost.h"
+
+#include "MathBoxHost\SkiaRenderer.h"
+#include "MathBoxHost\SkiaFontManager.h"
+
 #include "resource.h"
 #include "finddlg.h"
 #include "aboutdlg.h"
@@ -26,8 +28,7 @@ namespace {
 }
 class CMainFrame :
    public CFrameWindowImpl<CMainFrame>,
-   public CUpdateUI<CMainFrame>,
-   public IFontProvider_ {
+   public CUpdateUI<CMainFrame> {
 public:
    DECLARE_FRAME_WND_CLASS(NULL, IDR_MAINFRAME);
 
@@ -38,8 +39,8 @@ public:
    CCfgReader              m_CfgReader;
 
    //MathBox resources
-   CD2DRenderer            m_d2dr;
-   CD2DFontManager         m_D2DFontManager;
+   CSkiaFontManager        m_skFontManager;
+   CSkiaRenderer           m_skr;
 
    CCommandBarCtrl         m_CmdBar;
    CConfigMRUList          m_mru;
@@ -52,13 +53,13 @@ public:
    CPrinterT<true>         m_printer;
    CDevModeT<true>         m_devmode;
 
-   CMainFrame() : m_d2dr(*this), m_MathBoxView(m_CfgReader, m_D2DFontManager, m_d2dr)
+   CMainFrame() : m_skr(m_skFontManager),
+      m_MathBoxView(m_CfgReader, m_skFontManager, m_skr)
    {
       m_printer.OpenDefaultPrinter();
       m_devmode.CopyFromPrinter(m_printer);
    }
 //ATTS
-   float GetFontSizePts() const { return m_MathBoxView.FontSizePts(); }
 
    BOOL PreTranslateMessage(MSG* pMsg)
    {
@@ -149,17 +150,18 @@ public:
       m_MathBoxView.Create(m_hWnd, rcDefault, NULL,
          WS_CHILD | WS_VSCROLL | WS_HSCROLL,
          WS_EX_CLIENTEDGE); //hidden initially
-      //initialize D2D renderer and font manager
-      HRESULT hRes = m_d2dr.Initialize((HWND)m_MathBoxView);
-      _ASSERT_RET(hRes >= S_OK, -1); //snbh
+      //initialize Skia renderer and font manager
+      if (!m_skr.Initialize((HWND)m_MathBoxView)) {
+         MessageBox(L"Could not initialize Skia rendering", L"Error", MB_OK | MB_ICONERROR);
+         return -1;
+      }
       WCHAR wszDir[MAX_PATH] = { 0 };
       ::GetCurrentDirectoryW(_countof(wszDir), wszDir);
       m_sAppDir = wszDir;
       if (m_sAppDir.back() != L'\\')
          m_sAppDir.append(1, L'\\');
       wstring sLMFontsDir = m_sAppDir + L"LatinModernFonts\\";
-      hRes = m_D2DFontManager.Init(sLMFontsDir, m_d2dr.DWFactory());
-      if (FAILED(hRes)) {
+      if (!m_skFontManager.Init(sLMFontsDir)) {
          CWindow::MessageBox(L"Could not load Latin Modern fonts", L"Error", MB_OK | MB_ICONERROR);
          return -1;
       }
@@ -561,6 +563,10 @@ public:
       return 0;
    }
    LRESULT OnFilePrint(WORD, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/) {
+      if (!m_MathBoxView.CanPrint()) {
+         MessageBox(L"Printing is not yet supported by the Skia renderer.", L"MathPad", MB_OK | MB_ICONINFORMATION);
+         return 0;
+      }
       UINT nPageCount = m_MathBoxView.PageCount();
 
       CPrintDialog dlg(FALSE);
@@ -585,9 +591,9 @@ public:
             nMin = dlg.m_pd.nFromPage - 1;
             nMax = dlg.m_pd.nToPage - 1;
          }
-         // Begin print job in D2D
+         // Begin print job
          if(!m_MathBoxView.BeginPrintJob(m_sPrinterName)) {
-            MessageBox(L"Failed to initialize D2D printing", L"Error", MB_OK | MB_ICONERROR);
+            MessageBox(L"Failed to initialize printing", L"Error", MB_OK | MB_ICONERROR);
             // ALWAYS End print job
             m_MathBoxView.EndPrintJob();
             GlobalFree(dlg.m_pd.hDevMode);
@@ -614,11 +620,6 @@ public:
       return 0;
    }
 
-//IFontProvider_ Impl
-   uint32_t FontCount() const override { return m_D2DFontManager.FontCount(); }
-   IDWriteFontFace* GetDWFont(int32_t nIdx) const override {
-      return m_D2DFontManager.GetDWFont(nIdx);
-   }
 //UI UPDATE
    void UpdateUIAll()
    {
@@ -644,7 +645,7 @@ public:
       UIEnable(ID_EDIT_REPEAT, bNotEmpty);
       UIEnable(ID_EDIT_REPLACE, bNotEmpty);
       UIEnable(ID_FILE_PAGE_SETUP, !m_bMathBoxView);
-      UIEnable(ID_FILE_PRINT, m_bMathBoxView);
+      UIEnable(ID_FILE_PRINT, m_bMathBoxView && m_MathBoxView.CanPrint());
 
       UISetCheck(ID_EDIT_WORD_WRAP, m_EditView.m_bWordWrap);
       UISetCheck(ID_VIEW_MATH, m_bMathBoxView);

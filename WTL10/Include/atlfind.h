@@ -839,7 +839,7 @@ public:
 				ft.chrg.cpMax = 0;
 
 			dwFlags &= ~FR_DOWN;
-			ATLASSERT(ft.chrg.cpMax <= ft.chrg.cpMin);
+			//ATLASSERT(ft.chrg.cpMax <= ft.chrg.cpMin); //[JA][20261114][wrong assert!]
 		}
 
 		BOOL bRet = FALSE;

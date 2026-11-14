@@ -1,0 +1,39 @@
+{
+  "skia_revision": "e8ff7a4187ecd9c98df14e7a617dd4ac5d74295a",
+  "freetype_revision": "264b5fbf5b912b39f98d038bf75d39be0a73f21b",
+  "libpng_revision": "d5515b5b8be3901aac04e5bd8bd5c89f287bcd33",
+  "zlib_revision": "646b7f569718921d7d4b5b8e22572ff6c76f2596",
+  "compiler": "MSVC v143 19.44.35229.0",
+  "sdk": "10.0.26100.0",
+  "language": "C++20",
+  "features": [
+    "raster",
+    "FreeType custom empty font manager"
+  ],
+  "headers": 75,
+  "artifacts": [
+    {
+      "configuration": "Debug",
+      "bytes": 281273148,
+      "sha256": "4F5604E7B685792CD2060D4A824E8C01F781410F6508A9DF1B090C8CB4146BB7",
+      "executable_bytes": 11507200
+    },
+    {
+      "configuration": "Release",
+      "bytes": 17736438,
+      "sha256": "A52F57899D2A08BE3FF4309B37FD467BDBD7176939212B0BF2CFBD339C0CF8BA",
+      "executable_bytes": 3311616
+    }
+  ],
+  "validation": {
+    "glyphs": 15401,
+    "metric_differences": 0,
+    "run_bounds": 70,
+    "run_bound_differences": 0,
+    "debug_heap_growth_bytes": 0,
+    "debug_heap_growth_blocks": 0,
+    "app_import_audit": "No D2D, DirectWrite, D3D, DXGI or OpenGL DLL imports",
+    "visual_check": "Deferred",
+    "printing": "Unsupported, disabled in UI"
+  }
+}

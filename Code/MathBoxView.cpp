@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "MathBoxView.h"
 #include "CfgReader.h"
-#include "MathBoxHost/D2DRenderer.h"
+#include "MathBoxHost/SkiaRenderer.h"
 
 //STATIC HELPERS
 namespace {
@@ -49,7 +49,7 @@ namespace {
       fPts = 0;
       size_t nSep = sVal.find_first_not_of("0123456789.");
       string sNum = sVal.substr(0, nSep);
-      string sUnit = sVal.substr(nSep);
+      string sUnit = nSep == string::npos ? string() : sVal.substr(nSep);
       _TrimString(sNum);
       _TrimString(sUnit);
       if (sNum.empty())
@@ -122,7 +122,7 @@ namespace {
 LRESULT CMathBoxView::OnSize(UINT, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
    wParam;
    if (lParam)
-      m_d2dr.OnSize(lParam);
+      m_skr.OnSize(lParam);
    bHandled = FALSE;
    return 0;
 }
@@ -201,16 +201,21 @@ LRESULT CMathBoxView::OnKeyDown(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/,
       bHandled = FALSE;
    return 0;
 }
-LRESULT CMathBoxView::OnPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
-   wParam; lParam; bHandled;
+LRESULT CMathBoxView::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL& bHandled) {
+   lParam; bHandled;
+   PAINTSTRUCT paint = {};
+   HDC hDC = uMsg == WM_PRINTCLIENT ? reinterpret_cast<HDC>(wParam) : ::BeginPaint(*this, &paint);
+   if (!hDC) {
+      return 0;
+   }
 
    // Get scroll position for correct offset
    int nScrollX = GetScrollPos(SB_HORZ);
    int nScrollY = GetScrollPos(SB_VERT);
 
-   m_d2dr.BeginDraw();
+   m_skr.BeginDraw();
    // Fill the view background
-   m_d2dr.EraseBkgnd(m_rgbBkg);
+   m_skr.EraseBkgnd(m_rgbBkg);
 
    CRect rcClient;
    GetClientRect(&rcClient);
@@ -223,7 +228,7 @@ LRESULT CMathBoxView::OnPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL&
                               (nScrollY - m_nPageVertGap + rcClient.Height()) / fPageHeightWithGap);
    const float fLeft = rcClient.Width() > fPageSX ? (rcClient.Width() - fPageSX) / 2 : 0;
    // Draw each page, centered horizontally
-   for (int nPageIdx = nVisible0; nPageIdx <= nVisible1; ++nPageIdx) {
+   for (int nPageIdx = nVisible0; !m_vLines.empty() && nPageIdx <= nVisible1; ++nPageIdx) {
       CRectF rcfPage;
       rcfPage.left = fLeft - nScrollX;
       rcfPage.top = m_nPageVertGap + fPageHeightWithGap * nPageIdx - nScrollY;
@@ -232,13 +237,15 @@ LRESULT CMathBoxView::OnPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL&
       DrawPage_(nPageIdx, rcfPage);
    }
 
-   HRESULT hr = m_d2dr.EndDraw();
+   HRESULT hr = m_skr.EndDraw(hDC);
+   if (uMsg != WM_PRINTCLIENT) {
+      ::EndPaint(*this, &paint);
+   }
    if (FAILED(hr)) {
       wchar_t errorMsg[256];
       swprintf_s(errorMsg, L"EndDraw failed with HRESULT: 0x%08X", hr);
       ::MessageBoxW(this->GetParent(), errorMsg, L"Render Error", MB_OK);
    }
-   ::ValidateRect(*this, nullptr);
    return 0;
 }
 //METHODS
@@ -301,7 +308,7 @@ void CMathBoxView::ReadCfgSettings_() {
    uint32_t rgbText{ 0x004F00 };
    m_cfgr.GetHVal(L"MB_ColorText", rgbText);
    m_mathBoxHost.SetClrText(rgbText);
-   m_d2dr.SetTextColor(rgbText);
+   m_skr.SetTextColor(rgbText);
 
    m_cfgr.GetHVal(L"MB_ColorBkg", m_rgbPage);
    m_mathBoxHost.SetClrBkg(m_rgbPage);
@@ -349,17 +356,20 @@ bool CMathBoxView::SetMathContent(const string& sTeX) {
    return true;
 }
 //PRINTING
+bool CMathBoxView::CanPrint() const {
+   return m_skr.CanPrint();
+}
 bool CMathBoxView::BeginPrintJob(const wstring& sPrinterName) {
-   return m_d2dr.OnBeginPrintJob(sPrinterName);
+   return m_skr.OnBeginPrintJob(sPrinterName);
 }
 void CMathBoxView::EndPrintJob() {
-   m_d2dr.OnEndPrintJob();
+   m_skr.OnEndPrintJob();
 }
 
 bool CMathBoxView::PrintPage(UINT nPage) {
    if (nPage >= (UINT)m_vPageLines.size())
       return false;
-   bool bOk = m_d2dr.OnPrintPageBegin(m_rgbPage);
+   bool bOk = m_skr.OnPrintPageBegin(m_rgbPage);
    if(!bOk)
       return false;
    // Draw all lines for this page
@@ -369,14 +379,14 @@ bool CMathBoxView::PrintPage(UINT nPage) {
    float left = (float)m_szeBoxMarins.cx;
    float top = (float)m_szeBoxMarins.cy;
    m_mathBoxHost.DrawLines(left, top, nLineStart, nLineEnd, 1.0f);
-   return m_d2dr.OnPrintPageEnd(m_szePageDIPs);
+   return m_skr.OnPrintPageEnd(m_szePageDIPs);
 }
 //PRIVATE METHODS
 void CMathBoxView::DrawPage_(int nPageNum, const CRectF& rcfPage) {
    // Draw page background
-   m_d2dr.FillRect(rcfPage.left, rcfPage.top, rcfPage.right, rcfPage.bottom, m_rgbPage);
+   m_skr.FillRect(rcfPage.left, rcfPage.top, rcfPage.right, rcfPage.bottom, m_rgbPage);
    // Draw border: test
-   m_d2dr.DrawRect(rcfPage.left, rcfPage.top, rcfPage.right, rcfPage.bottom,
+   m_skr.DrawRect(rcfPage.left, rcfPage.top, rcfPage.right, rcfPage.bottom,
                   elsSolid, 1.0f, 0xFF808080);
    // Draw page shadow (future)
    // Draw content
@@ -461,6 +471,6 @@ void CMathBoxView::OverrideSettings_(const string& sTeX) {
    itPair = mapDict.find("textcolor");
    if (itPair != mapDict.end() && _ParseColor(itPair->second, rgbColor)) {
       m_mathBoxHost.SetClrText(rgbColor);
-      m_d2dr.SetTextColor(rgbColor);
+      m_skr.SetTextColor(rgbColor);
    }
 }

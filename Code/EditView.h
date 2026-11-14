@@ -86,7 +86,7 @@ public:
       // Register the entire edit control as a tool (required!)
       CRect rcClient;
       GetClientRect(&rcClient);
-      CToolInfo ti(TTF_SUBCLASS, m_hWnd, 0, &rcClient, _T(""));
+      CToolInfo ti(TTF_SUBCLASS, m_hWnd, 0, &rcClient, (LPWSTR)L"");
       m_tooltip.AddTool(&ti);
 
       return lRet;

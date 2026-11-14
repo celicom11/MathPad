@@ -1,9 +1,30 @@
+#pragma once
 #define WINVER				_WIN32_WINNT_WIN10
 #define _WIN32_WINNT    _WIN32_WINNT_WIN10
 #define _WIN32_IE			_WIN32_IE_IE110
 
-#define _WTL_USE_CSTRING
+//SKIA
+#pragma warning(push)
+#pragma warning( disable: 4244 )
+#pragma warning( disable: 4267 )
+#include "include/core/SkRefCnt.h"
+#include "include/core/SkData.h"
+#include "include/core/SkFontMgr.h"
+#include "include/core/SkTypeface.h"
+#include "include/core/SkCanvas.h"
+#include "include/core/SkFont.h"
+#include "include/core/SkMatrix.h"
+#include "include/core/SkPaint.h"
+#include "include/core/SkPixmap.h"
+#include "include/core/SkSurface.h"
+#include "include/effects/SkDashPathEffect.h"
+#include "include/ports/SkFontMgr_empty.h"
+#include "include/core/SkPath.h"
 
+#pragma warning(pop)
+
+#define _WTL_USE_CSTRING
+//WTL
 #include <atlbase.h>
 #include <atlapp.h>
 #include <atlframe.h>
@@ -22,14 +43,6 @@ extern CAppModule _Module;
 
 #include <atltypes.h>
 #include <atlwin.h>
-
-#include <dwrite.h>
-#include <d3d11.h>
-#include <d2d1_1.h>
-#include <d2d1_1helper.h>
-#include <dxgi1_2.h>
-#include <wincodec.h>
-
 //STL
 #include <vector>
 #include <cmath>
@@ -41,7 +54,16 @@ extern CAppModule _Module;
 #include <algorithm>
 #include <numeric>
 #include <sstream>
+#include <filesystem>
+#include <utility>
+#include <atomic>
+#include <cstddef>
+#include <cstdint>
+#include <iosfwd>
+#include <type_traits>
 using namespace std;
+
+
 
 #define _ASSERT_RET(expr,retval) {if(!(expr)){_ASSERT(0);return retval;}}
 #define CHECK_HR(hr) {if(FAILED(hr)){_ASSERT(0);return hr;}}
@@ -51,13 +73,6 @@ template <class T> void SafeRelease(T** ppT) {
       *ppT = nullptr;
    }
 }
-
-//linker
-#pragma comment(lib, "d3d11")
-#pragma comment(lib, "dxgi")
-#pragma comment(lib, "d2d1")
-#pragma comment(lib, "dwrite")
-#pragma comment(lib, "windowscodecs")
 
 //MSCC 6.0 manifest
 #if defined _M_IX86

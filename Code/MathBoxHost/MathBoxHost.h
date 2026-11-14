@@ -2,15 +2,15 @@
 #include "MathBox_CAPI.h"
 #include "MathBoxHostDefs.h"
 
-class CD2DRenderer;
-class CD2DFontManager;
+class CSkiaRenderer;
+class CSkiaFontManager;
 class CLMMFont;
 //cpp front-end for MBI_API/parsed MB_MathItem
 class CMathBoxHost {
 //DATA
    HMODULE                 m_hMathBoxLib{ nullptr };
-   MB_DocParams            m_DocParams;
-   MBI_DocRenderer         m_DocRenderer;
+   MB_DocParams            m_DocParams{};
+   MBI_DocRenderer         m_DocRenderer{};
    const MBI_API*          m_pMBAPI{ nullptr }; //external/dnd!
    MB_Engine               m_engine{ nullptr };
    MB_MathItem             m_pMBItem{ nullptr };
@@ -19,7 +19,7 @@ class CMathBoxHost {
 public:
 //CTOR/DTOR/INIT
    CMathBoxHost() = delete;
-   CMathBoxHost(CD2DFontManager& d2dFontManager, CD2DRenderer& d2dr);
+   CMathBoxHost(CSkiaFontManager& skFontManager, CSkiaRenderer& skr);
    ~CMathBoxHost() { CleanUp(); }
    bool LoadMathBoxLib();
    void CleanUp();

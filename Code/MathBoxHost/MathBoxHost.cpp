@@ -1,18 +1,22 @@
 #include "stdafx.h"
 #include "MathBoxHost.h"
-#include "D2DFontManager.h"
-#include "D2DRenderer.h"
+#include "SkiaFontManager.h"
+#include "SkiaRenderer.h"
 
 namespace {
-   CD2DFontManager*  _pFontManager{ nullptr };
-   CD2DRenderer*     _pD2DR{ nullptr };
+   CSkiaFontManager*  _pFontManager{ nullptr };
+   CSkiaRenderer*     _pSKR{ nullptr };
 }
-CMathBoxHost::CMathBoxHost(CD2DFontManager& d2dFontManager, CD2DRenderer& d2dr) {
-   _pFontManager = &d2dFontManager;
-   _pD2DR = &d2dr;
+CMathBoxHost::CMathBoxHost(CSkiaFontManager& skFontManager, CSkiaRenderer& skr) {
+   _pFontManager = &skFontManager;
+   _pSKR = &skr;
    m_DocParams.size_bytes = sizeof(MB_DocParams);
    m_DocParams.max_width_fdu = 0;   //no limit
-   //D2DFontManager shim
+   m_DocParams.font_size_pts = 24.0f;
+   m_DocParams.color_text_argb = 0x004F00;
+   m_DocParams.color_bkg_argb = 0xFFFFFF;
+   m_DocParams.color_selection_argb = 0xFF4FFF;
+   //SkiaFontManager shim
    m_DocParams.font_mgr.size_bytes = sizeof(MBI_FontManager);
    m_DocParams.font_mgr.fontCount = 0; //unknown yet
    m_DocParams.font_mgr.getFontsDir = _getFontsDir;
@@ -101,28 +105,34 @@ bool CMathBoxHost::Parse(const string& sTeX, OUT vector<CRectF>& vLines) {
 }
 void CMathBoxHost::Draw(float fX, float fY, float fZoom) {
    if (!!m_pMBAPI && !!m_pMBItem) {
+      if (!isfinite(fZoom) || fZoom <= 0) {
+         return;
+      }
+      _pSKR->SetFontSizePts(m_DocParams.font_size_pts);
       if(fZoom != 1.0f) {
-         D2D1_MATRIX_3X2_F matScale = D2D1::Matrix3x2F::Scale(D2D1::SizeF(fZoom, fZoom), D2D1::Point2F(0,0));
-         _pD2DR->SetTransform(matScale);
+         SkMatrix matScale = SkMatrix::ScaleTranslate(fZoom, fZoom, 0, 0);
+         _pSKR->SetTransform(matScale);
       }
       m_pMBAPI->mathItemDraw(m_pMBItem, fX, fY, &m_DocRenderer);
       if (fZoom != 1.0f) { //restore
-         D2D1_MATRIX_3X2_F matIdentity = D2D1::Matrix3x2F::Identity();
-         _pD2DR->SetTransform(matIdentity);
+         _pSKR->SetTransform(SkMatrix::I());
       }
    }
 }
 void CMathBoxHost::DrawLines(float fX, float fY, int32_t nLineStart, int32_t nLineEnd, float fZoom) {
    if (!m_pMBAPI || !m_pMBItem)
       return; //ntd
+   if (!isfinite(fZoom) || fZoom <= 0) {
+      return;
+   }
+   _pSKR->SetFontSizePts(m_DocParams.font_size_pts);
    if (fZoom != 1.0f) {
-      D2D1_MATRIX_3X2_F matScale = D2D1::Matrix3x2F::Scale(D2D1::SizeF(fZoom, fZoom), D2D1::Point2F(0, 0));
-      _pD2DR->SetTransform(matScale);
+      SkMatrix matScale = SkMatrix::ScaleTranslate(fZoom, fZoom, 0, 0);
+      _pSKR->SetTransform(matScale);
    }
    m_pMBAPI->mathItemDrawLines(m_pMBItem, fX/fZoom, fY/fZoom, nLineStart, nLineEnd, &m_DocRenderer);
    if (fZoom != 1.0f) { //restore
-      D2D1_MATRIX_3X2_F matIdentity = D2D1::Matrix3x2F::Identity();
-      _pD2DR->SetTransform(matIdentity);
+      _pSKR->SetTransform(SkMatrix::I());
    }
 }
 //C-API/callbacks
@@ -147,20 +157,23 @@ bool CMathBoxHost::_getFontIndices(int32_t font_idx, uint32_t count, const uint3
 bool CMathBoxHost::_getGlyphRunMetrics(int32_t font_idx, uint32_t count,
                                           const uint16_t* indices, OUT MB_GlyphMetrics* out_glyph_metrics, 
                                           OUT MB_Bounds* out_bounds) {
+   if (!out_bounds) {
+      return false;
+   }
    return _pFontManager->GetGlyphRunMetrics(font_idx, count, indices, out_glyph_metrics, *out_bounds);
 }
 //
 void CMathBoxHost::_drawLine(float x1, float y1, float x2, float y2, uint32_t style, float width, uint32_t argb) {
-   _pD2DR->DrawLine(x1, y1, x2, y2, (EnumLineStyles)style, width, argb);
+   _pSKR->DrawLine(x1, y1, x2, y2, (EnumLineStyles)style, width, argb);
 }
 void CMathBoxHost::_drawRect(float left, float top, float right, float bottom, 
                              uint32_t style, float width, uint32_t argb) {
-   _pD2DR->DrawRect(left, top, right, bottom, (EnumLineStyles)style, width, argb);
+   _pSKR->DrawRect(left, top, right, bottom, (EnumLineStyles)style, width, argb);
 }
 void CMathBoxHost::_fillRect(float left, float top, float right, float bottom, uint32_t argb) {
-   _pD2DR->FillRect(left, top, right, bottom, argb);
+   _pSKR->FillRect(left, top, right, bottom, argb);
 }
 void CMathBoxHost::_drawGlyphRun(int32_t font_idx, uint32_t count, const uint16_t* indices,
                                  float base_x, float base_y, float scale, uint32_t argb) {
-   _pD2DR->DrawGlyphRun(font_idx, count, indices, base_x, base_y, scale, argb);
+   _pSKR->DrawGlyphRun(font_idx, count, indices, base_x, base_y, scale, argb);
 }

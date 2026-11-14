@@ -26,12 +26,6 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="MathBoxHost\D2DFontManager.cpp">
-      <Filter>Source Files\MathBoxHost</Filter>
-    </ClCompile>
-    <ClCompile Include="MathBoxHost\D2DRenderer.cpp">
-      <Filter>Source Files\MathBoxHost</Filter>
-    </ClCompile>
     <ClCompile Include="MathBoxHost\MathBoxHost.cpp">
       <Filter>Source Files\MathBoxHost</Filter>
     </ClCompile>
@@ -53,6 +47,12 @@
     <ClCompile Include="MathBoxViewPage.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="MathBoxHost\SkiaRenderer.cpp">
+      <Filter>Source Files\MathBoxHost</Filter>
+    </ClCompile>
+    <ClCompile Include="MathBoxHost\SkiaFontManager.cpp">
+      <Filter>Source Files\MathBoxHost</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mainfrm.h">
@@ -69,15 +69,6 @@
     </ClInclude>
     <ClInclude Include="MathBoxView.h">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MathBoxHost\D2DFontManager.h">
-      <Filter>Source Files\MathBoxHost</Filter>
-    </ClInclude>
-    <ClInclude Include="MathBoxHost\D2DGeomSink.h">
-      <Filter>Source Files\MathBoxHost</Filter>
-    </ClInclude>
-    <ClInclude Include="MathBoxHost\D2DRenderer.h">
-      <Filter>Source Files\MathBoxHost</Filter>
     </ClInclude>
     <ClInclude Include="MathBoxHost\MathBox_CAPI.h">
       <Filter>Source Files\MathBoxHost</Filter>
@@ -121,13 +112,17 @@
     <ClInclude Include="ColorBtn.h">
       <Filter>Source Files\Dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="MathBoxHost\SkiaRenderer.h">
+      <Filter>Source Files\MathBoxHost</Filter>
+    </ClInclude>
+    <ClInclude Include="MathBoxHost\SkiaFontManager.h">
+      <Filter>Source Files\MathBoxHost</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Toolbar.bmp">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\MathPad.cfg" />
-    <None Include="..\Macros.mth" />
     <None Include="..\Samples\2601.00713v1_page5.pdf">
       <Filter>Samples</Filter>
     </None>
@@ -137,6 +132,9 @@
     <None Include="..\Samples\SamplesDescription.md">
       <Filter>Samples</Filter>
     </None>
+    <None Include="..\Bin\Macros.mth" />
+    <None Include="..\Bin\MathPad.cfg" />
+    <None Include="..\Bin\TestDoc.mth" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuildStep Include="res\mathpad.exe.manifest">
@@ -149,7 +147,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\TestDoc.mth" />
     <Text Include="..\Samples\2601.00713v1_page5.txt">
       <Filter>Samples</Filter>
     </Text>

@@ -1,20 +1,25 @@
 # MathPad
 
-A lightweight LaTeX math document editor/viewer for Windows, built with WTL/ATL and Direct2D.
+A lightweight LaTeX math document editor/viewer for Windows, built with WTL/ATL,
+Skia raster rendering, and FreeType fonts.
 LaTeX engine is provided by cross-platform MathBox library (https://github.com/celicom11/MathBox).
 
 ## Features
 - Rich text LaTeX editor with error highlighting
 - Page-layout math renderer (MathBoxLib)
 - Per-document settings via `%% key = value` header comments
-- Print (to PDF) support
+- Printing is currently unavailable while the Skia print path is being implemented
 
 ## Requirements
 - Windows 10/11 x64
-- Visual Studio 2022
+- Visual Studio 2022, v143 toolset, C++20
+- Git LFS to download the bundled static Skia libraries
 
 ## Building
-Open `Code\MathPad.vcxproj` in Visual Studio 2022 and build **x64 Release** or **x64 Debug**.
+After cloning, run `git lfs install` and `git lfs pull` to obtain the libraries.
+Open `MathPad.sln` in Visual Studio 2022 and build **x64 Release** or **x64 Debug**.
+The self-contained Skia headers and libraries are under `Skia/`; no installed
+FreeType or external Skia project is needed. See [Skia package details](Skia/README.md).
 The executable and all runtime assets are output to `Bin\`.
 
 ## Runtime files (pre-placed in `Bin\`)

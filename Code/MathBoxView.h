@@ -14,15 +14,15 @@ class CMathBoxView : public CWindowImpl<CMathBoxView>,
    CPoint               m_ptSel;                   // Selection anchor
    CRect                m_rcSel;                   //
    const CCfgReader&    m_cfgr;                    // external
-   CD2DRenderer&        m_d2dr;                    // external
+   CSkiaRenderer&       m_skr;                    // external
    CMathBoxHost         m_mathBoxHost;
    vector<CRectF>       m_vLines;                  // cached line rects
    vector<int32_t>      m_vPageLines;              // first line index of each page
 
 public:
    DECLARE_WND_CLASS(L"MathBoxView")
-   CMathBoxView(const CCfgReader& cfgr, CD2DFontManager& d2dFontManager, CD2DRenderer& d2dr):
-      m_cfgr(cfgr), m_d2dr(d2dr), m_mathBoxHost(d2dFontManager, m_d2dr){}
+   CMathBoxView(const CCfgReader& cfgr, CSkiaFontManager& skFontManager, CSkiaRenderer& skr):
+      m_cfgr(cfgr), m_skr(skr), m_mathBoxHost(skFontManager, m_skr){}
 
    BOOL PreTranslateMessage(MSG* pMsg)
    {
@@ -83,6 +83,7 @@ public:
    inline int DIPsToMarginUnits(long dips) { return long((dips / 96.0) * 1000.0 + 0.5); }
    inline int MarginUnitsToDIPs(long mu)   { return long((mu / 1000.0) * 96.0 + 0.5); }
    bool BeginPrintJob(const wstring& sPrinterName);
+   bool CanPrint() const;
    bool PrintPage(UINT nPage);
    void EndPrintJob();
    CRect GetPrintPageMargins() {
