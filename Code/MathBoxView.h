@@ -2,6 +2,8 @@
 #include "MathBoxHost/MathBoxHost.h"
 #include "CfgReader.h"
 
+class SkWStream;
+
 class CMathBoxView : public CWindowImpl<CMathBoxView>,
                      public CZoomScrollImpl<CMathBoxView> {
 //TYPES
@@ -82,10 +84,8 @@ public:
    // 1 inch = 1000 units (for margins)
    inline int DIPsToMarginUnits(long dips) { return long((dips / 96.0) * 1000.0 + 0.5); }
    inline int MarginUnitsToDIPs(long mu)   { return long((mu / 1000.0) * 96.0 + 0.5); }
-   bool BeginPrintJob(const wstring& sPrinterName);
-   bool CanPrint() const;
-   bool PrintPage(UINT nPage);
-   void EndPrintJob();
+   // Writes a complete PDF; the caller owns and finalizes the output stream.
+   bool ExportPDF(SkWStream& stream);
    CRect GetPrintPageMargins() {
       // Convert m_szeBoxMarins (DIPs) to 1/1000 inch units for the dialog
       return CRect(

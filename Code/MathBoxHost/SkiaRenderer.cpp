@@ -17,25 +17,28 @@ bool CSkiaRenderer::Initialize(HWND hwnd) {
    return SUCCEEDED(m_hDrawResult);
 }
 
-// PRINTING (not supported by this screen-only adapter yet)
-bool CSkiaRenderer::OnBeginPrintJob(const wstring& sPrinterName) {
-   (void)sPrinterName;
-   return false;
+// PDF PAGES
+bool CSkiaRenderer::BeginPDFPage(SkCanvas* pCanvas) {
+   if (!pCanvas || m_bDrawing) { return false; }
+   m_pCanvas = pCanvas;
+   m_nCanvasSaveCount = pCanvas->save();
+   m_bDrawing = m_bPDFDrawing = true;
+   m_hDrawResult = S_OK;
+   SetTransform(SkMatrix::I());
+   return true;
 }
-void CSkiaRenderer::OnEndPrintJob() {}
-bool CSkiaRenderer::OnPrintPageBegin(uint32_t argbBkg) {
-   (void)argbBkg;
-   return false;
-}
-bool CSkiaRenderer::OnPrintPageEnd(SIZE szePageDIPs) {
-   (void)szePageDIPs;
-   return false;
+HRESULT CSkiaRenderer::EndPDFPage() {
+   if (!m_bPDFDrawing) { return E_UNEXPECTED; }
+   m_pCanvas->restoreToCount(m_nCanvasSaveCount);
+   m_pCanvas = nullptr;
+   m_bDrawing = m_bPDFDrawing = false;
+   return m_hDrawResult;
 }
 
 // DRAWING
 void CSkiaRenderer::EraseBkgnd(uint32_t nRGB) {
-   if (m_bDrawing && SUCCEEDED(m_hDrawResult) && m_pSurface) {
-      m_pSurface->getCanvas()->clear(0xFF000000u | nRGB);
+   if (m_bDrawing && SUCCEEDED(m_hDrawResult) && m_pCanvas) {
+      m_pCanvas->clear(0xFF000000u | nRGB);
    }
 }
 void CSkiaRenderer::OnSize(LPARAM lParam) {
@@ -51,8 +54,9 @@ void CSkiaRenderer::BeginDraw() {
    }
    m_bDrawing = true;
    m_hDrawResult = ResizeSurface_();
+   m_pCanvas = SUCCEEDED(m_hDrawResult) && m_pSurface ? m_pSurface->getCanvas() : nullptr;
    if (SUCCEEDED(m_hDrawResult) && m_pSurface) {
-      SkCanvas* pCanvas = m_pSurface->getCanvas();
+      SkCanvas* pCanvas = m_pCanvas;
       pCanvas->restoreToCount(1);
       pCanvas->resetMatrix();
       // Match the view's client-coordinate page placement and scroll offsets.
@@ -60,10 +64,11 @@ void CSkiaRenderer::BeginDraw() {
    }
 }
 HRESULT CSkiaRenderer::EndDraw(HDC hDC) {
-   if (!m_bDrawing) {
+   if (!m_bDrawing || m_bPDFDrawing) {
       return E_UNEXPECTED;
    }
    m_bDrawing = false;
+   m_pCanvas = nullptr;
    if (FAILED(m_hDrawResult) || !m_pSurface) {
       return m_hDrawResult;
    }
@@ -93,44 +98,48 @@ HRESULT CSkiaRenderer::EndDraw(HDC hDC) {
    return nResult == 0 || nResult == GDI_ERROR ? E_FAIL : S_OK;
 }
 void CSkiaRenderer::SetTransform(const SkMatrix& mat) {
-   if (m_bDrawing && SUCCEEDED(m_hDrawResult) && m_pSurface) {
-      SkCanvas* pCanvas = m_pSurface->getCanvas();
+   if (m_bDrawing && SUCCEEDED(m_hDrawResult) && m_pCanvas) {
+      SkCanvas* pCanvas = m_pCanvas;
       if (!mat.isFinite()) {
          m_hDrawResult = E_INVALIDARG;
          return;
       }
-      pCanvas->setMatrix(mat);
+      pCanvas->resetMatrix();
+      if (m_bPDFDrawing) {
+         pCanvas->scale(72.0f / 96.0f, 72.0f / 96.0f);
+      }
+      pCanvas->concat(mat);
    }
 }
 void CSkiaRenderer::DrawLine(float x1, float y1, float x2, float y2,
                             EnumLineStyles style, float width, uint32_t argb) {
-   if (!m_bDrawing || FAILED(m_hDrawResult) || !m_pSurface) {
+   if (!m_bDrawing || FAILED(m_hDrawResult) || !m_pCanvas) {
       return;
    }
    SkPaint paint;
    SetStroke_(paint, style, width, argb);
-   m_pSurface->getCanvas()->drawLine(x1, y1, x2, y2, paint);
+   m_pCanvas->drawLine(x1, y1, x2, y2, paint);
 }
 void CSkiaRenderer::DrawRect(float left, float top, float right, float bottom,
                             EnumLineStyles style, float width, uint32_t argb) {
-   if (!m_bDrawing || FAILED(m_hDrawResult) || !m_pSurface) {
+   if (!m_bDrawing || FAILED(m_hDrawResult) || !m_pCanvas) {
       return;
    }
    SkPaint paint;
    SetStroke_(paint, style, width, argb);
-   m_pSurface->getCanvas()->drawRect(SkRect::MakeLTRB(left, top, right, bottom), paint);
+   m_pCanvas->drawRect(SkRect::MakeLTRB(left, top, right, bottom), paint);
 }
 void CSkiaRenderer::FillRect(float left, float top, float right, float bottom, uint32_t argb) {
-   if (!m_bDrawing || FAILED(m_hDrawResult) || !m_pSurface) {
+   if (!m_bDrawing || FAILED(m_hDrawResult) || !m_pCanvas) {
       return;
    }
    SkPaint paint;
    paint.setColor(0xFF000000u | (argb ? argb : m_argbText));
-   m_pSurface->getCanvas()->drawRect(SkRect::MakeLTRB(left, top, right, bottom), paint);
+   m_pCanvas->drawRect(SkRect::MakeLTRB(left, top, right, bottom), paint);
 }
 void CSkiaRenderer::DrawGlyphRun(int32_t font_idx, uint32_t count, const uint16_t* indices,
                                  float base_x, float base_y, float scale, uint32_t argb) {
-   if (!m_bDrawing || FAILED(m_hDrawResult) || !m_pSurface || !count || !indices) {
+   if (!m_bDrawing || FAILED(m_hDrawResult) || !m_pCanvas || !count || !indices) {
       return;
    }
    SkTypeface* pTypeface = m_FontManager.GetTypeface(font_idx);
@@ -160,7 +169,7 @@ void CSkiaRenderer::DrawGlyphRun(int32_t font_idx, uint32_t count, const uint16_
    SkPaint paint;
    paint.setAntiAlias(true);
    paint.setColor(0xFF000000u | (argb ? argb : m_argbText));
-   m_pSurface->getCanvas()->drawGlyphs({ indices, count }, { vPositions.data(), count },
+   m_pCanvas->drawGlyphs({ indices, count }, { vPositions.data(), count },
                                      { base_x, base_y }, font, paint);
 }
 

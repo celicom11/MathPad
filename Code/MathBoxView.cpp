@@ -348,38 +348,69 @@ bool CMathBoxView::SetMathContent(const string& sTeX) {
          m_vPageLines.push_back(nLine);
       }
    }
-   SIZE szeView = CalcViewSize_();
-   CZoomScrollImpl<CMathBoxView>::SetScrollSize(szeView);
-   // SetScrollSize resets line/page to defaults; set finer line step after
-   const int nLineStep = max(1, m_szePageDIPs.cy / 20); // 1/20th of a page height
-   CZoomScrollImpl<CMathBoxView>::SetScrollLine(nLineStep, nLineStep);
+   // Layout/PDF generation can run before a screen window is created.
+   if (m_hWnd) {
+      SIZE szeView = CalcViewSize_();
+      CZoomScrollImpl<CMathBoxView>::SetScrollSize(szeView);
+      // SetScrollSize resets line/page to defaults; set finer line step after.
+      const int nLineStep = max(1, m_szePageDIPs.cy / 20);
+      CZoomScrollImpl<CMathBoxView>::SetScrollLine(nLineStep, nLineStep);
+   }
    return true;
 }
-//PRINTING
-bool CMathBoxView::CanPrint() const {
-   return m_skr.CanPrint();
+// PDF EXPORT
+namespace {
+   // SkDocument::close() returns void; latch every write failure, including finalization.
+   class CCheckedPDFStream : public SkWStream {
+      SkWStream& m_Stream; //borrowed
+      bool m_bGood{ true };
+   public:
+      explicit CCheckedPDFStream(SkWStream& stream) : m_Stream(stream) {}
+      bool write(const void* pData, size_t nBytes) override {
+         if (m_bGood) { m_bGood = m_Stream.write(pData, nBytes); }
+         return m_bGood;
+      }
+      void flush() override { m_Stream.flush(); }
+      size_t bytesWritten() const override { return m_Stream.bytesWritten(); }
+      bool IsGood() const { return m_bGood; }
+   };
 }
-bool CMathBoxView::BeginPrintJob(const wstring& sPrinterName) {
-   return m_skr.OnBeginPrintJob(sPrinterName);
-}
-void CMathBoxView::EndPrintJob() {
-   m_skr.OnEndPrintJob();
-}
-
-bool CMathBoxView::PrintPage(UINT nPage) {
-   if (nPage >= (UINT)m_vPageLines.size())
+bool CMathBoxView::ExportPDF(SkWStream& stream) {
+   if (m_vLines.empty() || m_vPageLines.empty() || m_szePageDIPs.cx <= 0 || m_szePageDIPs.cy <= 0) {
       return false;
-   bool bOk = m_skr.OnPrintPageBegin(m_rgbPage);
-   if(!bOk)
-      return false;
-   // Draw all lines for this page
-   int nLineStart = m_vPageLines[nPage];
-   int nLineEnd = (nPage + 1 < (UINT)m_vPageLines.size()) ?
-                  m_vPageLines[nPage + 1] - 1 : (UINT)m_vLines.size() - 1;
-   float left = (float)m_szeBoxMarins.cx;
-   float top = (float)m_szeBoxMarins.cy;
-   m_mathBoxHost.DrawLines(left, top, nLineStart, nLineEnd, 1.0f);
-   return m_skr.OnPrintPageEnd(m_szePageDIPs);
+   }
+   CCheckedPDFStream output(stream);
+   SkPDF::Metadata metadata;
+   metadata.fCreator = "MathPad";
+   metadata.allowNoJpegs = true; // MathBox draws only text and vector primitives.
+   SkDocument* pDocument = SkPDF::MakeDocument(&output, metadata).release(); //owned
+   if (!pDocument) { return false; }
+   bool bSuccess = true;
+   try {
+      for (size_t nPage = 0; nPage < m_vPageLines.size() && bSuccess; ++nPage) {
+         SkCanvas* pCanvas = pDocument->beginPage(m_szePageDIPs.cx * 0.75f,
+                                                 m_szePageDIPs.cy * 0.75f);
+         bSuccess = m_skr.BeginPDFPage(pCanvas);
+         if (!bSuccess) { break; }
+         m_skr.EraseBkgnd(m_rgbPage);
+         const int nLineStart = m_vPageLines[nPage];
+         const int nLineEnd = (nPage + 1 < m_vPageLines.size() ?
+            m_vPageLines[nPage + 1] : (int)m_vLines.size()) - 1;
+         m_mathBoxHost.DrawLines((float)m_szeBoxMarins.cx, (float)m_szeBoxMarins.cy,
+                                 nLineStart, nLineEnd, 1.0f);
+         bSuccess = SUCCEEDED(m_skr.EndPDFPage());
+         pDocument->endPage();
+         bSuccess = bSuccess && output.IsGood();
+      }
+      if (bSuccess) { pDocument->close(); }
+      else { pDocument->abort(); }
+   } catch (...) {
+      m_skr.EndPDFPage();
+      pDocument->abort();
+      bSuccess = false;
+   }
+   pDocument->unref();
+   return bSuccess && output.IsGood();
 }
 //PRIVATE METHODS
 void CMathBoxView::DrawPage_(int nPageNum, const CRectF& rcfPage) {

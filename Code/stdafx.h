@@ -20,8 +20,12 @@
 #include "include/effects/SkDashPathEffect.h"
 #include "include/ports/SkFontMgr_empty.h"
 #include "include/core/SkPath.h"
-
+#include "include/docs/SkPDFDocument.h"
+#include "include/core/SkStream.h"
 #pragma warning(pop)
+#include <wincodec.h>
+#pragma comment(lib, "windowscodecs.lib")
+
 
 #define _WTL_USE_CSTRING
 //WTL

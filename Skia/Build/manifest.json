@@ -8,24 +8,31 @@
   "language": "C++20",
   "features": [
     "raster",
-    "FreeType custom empty font manager"
+    "FreeType custom empty font manager",
+    "PDF with zlib compression"
   ],
-  "headers": 75,
+  "headers": 81,
   "artifacts": [
     {
-      "configuration": "Debug",
-      "bytes": 281273148,
-      "sha256": "4F5604E7B685792CD2060D4A824E8C01F781410F6508A9DF1B090C8CB4146BB7",
-      "executable_bytes": 11507200
+      "configuration": "Release",
+      "bytes": 19958408,
+      "sha256": "0e446e093faefb5da06b22ad0f9255ee0c862106c4b77079691c5477456ce56c",
+      "tracked": true,
+      "executable_bytes": 3877376
     },
     {
-      "configuration": "Release",
-      "bytes": 17736438,
-      "sha256": "A52F57899D2A08BE3FF4309B37FD467BDBD7176939212B0BF2CFBD339C0CF8BA",
-      "executable_bytes": 3311616
+      "configuration": "Debug",
+      "bytes": 317537010,
+      "sha256": "5f93da12927b7920e5a4f807fe96121c2b1c937c311966dff7f4817df0482059",
+      "tracked": false,
+      "executable_bytes": 13369856
     }
   ],
   "validation": {
+    "configurations": [
+      "x64 Debug",
+      "x64 Release"
+    ],
     "glyphs": 15401,
     "metric_differences": 0,
     "run_bounds": 70,
@@ -33,7 +40,16 @@
     "debug_heap_growth_bytes": 0,
     "debug_heap_growth_blocks": 0,
     "app_import_audit": "No D2D, DirectWrite, D3D, DXGI or OpenGL DLL imports",
-    "visual_check": "Deferred",
-    "printing": "Unsupported, disabled in UI"
+    "pdf": {
+      "proof_pages": 2,
+      "fonts": 14,
+      "sample": "MathBoxV1.1.txt",
+      "sample_pages": 12,
+      "text": "Ordinary text, ligatures and Greek extracted by pypdf and PyMuPDF; mathematical variants/assemblies have incomplete Unicode mappings",
+      "rendering": "All Debug/Release proof and sample pages rasterized independently; first sample page visually reviewed",
+      "failure_checks": "Early/finalization stream write failures; export recovery; borrowed canvas restoration; screen recovery",
+      "units": "96 DIP coordinates converted to 72 PDF points"
+    },
+    "save_dialog_visual_check": "Passed by user; exported sample visually close to D2D reference, approximately 1-2% larger."
   }
 }

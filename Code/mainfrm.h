@@ -12,9 +12,6 @@
 #include "CfgReader.h"
 #include "ConfigMRUList.h"
 #include "SettingsDlg.h"
-#include <wincodec.h>
-
-#pragma comment(lib, "windowscodecs.lib")
 
 #define FILE_MENU_POSITION	0
 #define RECENT_MENU_POSITION	10
@@ -82,7 +79,7 @@ public:
       MESSAGE_HANDLER(WM_CREATE, OnCreate)
       MESSAGE_HANDLER(WM_CLOSE, OnClose)
       MESSAGE_HANDLER(WM_UPDATEROWCOL, OnUpdateRowCol)
-      COMMAND_ID_HANDLER(ID_FILE_PRINT, OnFilePrint)
+      COMMAND_ID_HANDLER(ID_FILE_PRINT, OnFileSavePDF)
       COMMAND_ID_HANDLER(ID_FILE_PAGE_SETUP, OnFilePageSetup)
       COMMAND_ID_HANDLER(ID_FILE_NEW, OnFileNew)
       COMMAND_ID_HANDLER(ID_FILE_OPEN, OnFileOpen)
@@ -108,6 +105,8 @@ public:
    END_MSG_MAP()
 
    BEGIN_UPDATE_UI_MAP(CMainFrame)
+      UPDATE_ELEMENT(ID_FILE_NEW, UPDUI_MENUPOPUP | UPDUI_TOOLBAR)
+      UPDATE_ELEMENT(ID_FORMAT_FONT, UPDUI_MENUPOPUP | UPDUI_TOOLBAR)
       UPDATE_ELEMENT(ID_FILE_PAGE_SETUP, UPDUI_MENUPOPUP )
       UPDATE_ELEMENT(ID_FILE_PRINT, UPDUI_MENUPOPUP | UPDUI_TOOLBAR)
       UPDATE_ELEMENT(ID_EDIT_UNDO, UPDUI_MENUPOPUP | UPDUI_TOOLBAR)
@@ -270,6 +269,7 @@ public:
 
    LRESULT OnFileNew(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
    {
+      if (m_bMathBoxView) { return 0; } // Also block the Ctrl+N accelerator.
       DoFileNew();
       return 0;
    }
@@ -591,61 +591,21 @@ public:
 
       return 0;
    }
-   LRESULT OnFilePrint(WORD, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/) {
-      if (!m_MathBoxView.CanPrint()) {
-         MessageBox(L"PDF export is not implemented yet.", L"MathPad", MB_OK | MB_ICONINFORMATION);
-         return 0;
+   LRESULT OnFileSavePDF(WORD, WORD, HWND, BOOL&) {
+      if (!m_MathBoxView.PageCount()) { return 0; }
+      filesystem::path pathName((PCWSTR)m_EditView.m_strFileName);
+      pathName.replace_extension(L".pdf");
+      const wstring sName = pathName.filename().wstring();
+      CFileDialog dlg(FALSE, L"pdf", sName.c_str(),
+         OFN_OVERWRITEPROMPT | OFN_HIDEREADONLY | OFN_PATHMUSTEXIST | OFN_NOCHANGEDIR,
+         L"PDF documents (*.pdf)\0*.pdf\0\0");
+      dlg.m_ofn.lpstrTitle = L"Save to PDF";
+      if (dlg.DoModal(m_hWnd) != IDOK) { return 0; }
+      CWaitCursor waitCursor;
+      if (!SavePDF_(dlg.m_szFileName)) {
+         MessageBox(L"Could not save the PDF. Check the destination and available disk space.",
+                     L"MathPad", MB_OK | MB_ICONERROR);
       }
-      UINT nPageCount = m_MathBoxView.PageCount();
-
-      CPrintDialog dlg(FALSE);
-      dlg.m_pd.hDevMode = m_devmode.CopyToHDEVMODE();
-      dlg.m_pd.hDevNames = m_printer.CopyToHDEVNAMES();
-      dlg.m_pd.nMinPage = 1;
-      dlg.m_pd.nMaxPage = (WORD)nPageCount;
-      dlg.m_pd.nFromPage = 1;
-      dlg.m_pd.nToPage = (WORD)nPageCount;
-      dlg.m_pd.Flags &= ~PD_NOPAGENUMS;
-
-      if (dlg.DoModal() == IDOK)
-      {
-         m_devmode.CopyFromHDEVMODE(dlg.m_pd.hDevMode);
-         m_printer.ClosePrinter();
-         m_printer.OpenPrinter(dlg.m_pd.hDevNames, m_devmode.m_pDevMode);
-         m_sPrinterName = dlg.GetDeviceName();
-         UINT nMin = 0;
-         UINT nMax = nPageCount - 1;
-         if (dlg.PrintRange() != FALSE)
-         {
-            nMin = dlg.m_pd.nFromPage - 1;
-            nMax = dlg.m_pd.nToPage - 1;
-         }
-         // Begin print job
-         if(!m_MathBoxView.BeginPrintJob(m_sPrinterName)) {
-            MessageBox(L"Failed to initialize printing", L"Error", MB_OK | MB_ICONERROR);
-            // ALWAYS End print job
-            m_MathBoxView.EndPrintJob();
-            GlobalFree(dlg.m_pd.hDevMode);
-            GlobalFree(dlg.m_pd.hDevNames);
-            return 0;
-         }
-         // Print each page
-         bool bSuccess = true;
-         for (UINT nPage = nMin; nPage <= nMax && bSuccess; ++nPage) {
-            bSuccess = m_MathBoxView.PrintPage(nPage);  // HDC not needed anymore!
-         }
-         // ALWAYS End print job
-         m_MathBoxView.EndPrintJob();
-
-         // Show result
-         if (!bSuccess)
-            MessageBox(L"Printing failed", L"Error", MB_OK | MB_ICONERROR);
-
-      }
-
-      GlobalFree(dlg.m_pd.hDevMode);
-      GlobalFree(dlg.m_pd.hDevNames);
-
       return 0;
    }
 
@@ -659,22 +619,25 @@ public:
          UpdateTitle();
       }
 
+      const bool bTextEdit = !m_bMathBoxView;
+      UIEnable(ID_FILE_NEW, bTextEdit);
+      UIEnable(ID_FORMAT_FONT, bTextEdit);
       UIEnable(ID_EDIT_UNDO, m_EditView.CanUndo());
-      UIEnable(ID_EDIT_PASTE, m_EditView.CanPaste(CF_TEXT));
+      UIEnable(ID_EDIT_PASTE, bTextEdit && m_EditView.CanPaste(CF_TEXT));
 
       BOOL bSel = (m_EditView.GetSelectionType() != SEL_EMPTY);
 
-      UIEnable(ID_EDIT_CUT, bSel);
-      UIEnable(ID_EDIT_COPY, bSel);
+      UIEnable(ID_EDIT_CUT, bTextEdit && bSel);
+      UIEnable(ID_EDIT_COPY, bTextEdit && bSel);
       UIEnable(ID_EDIT_CLEAR, bSel);
 
       BOOL bNotEmpty = (m_EditView.GetWindowTextLength() > 0);
       UIEnable(ID_EDIT_SELECT_ALL, bNotEmpty);
-      UIEnable(ID_EDIT_FIND, bNotEmpty);
-      UIEnable(ID_EDIT_REPEAT, bNotEmpty);
-      UIEnable(ID_EDIT_REPLACE, bNotEmpty);
+      UIEnable(ID_EDIT_FIND, bTextEdit && bNotEmpty);
+      UIEnable(ID_EDIT_REPEAT, bTextEdit && bNotEmpty);
+      UIEnable(ID_EDIT_REPLACE, bTextEdit && bNotEmpty);
       UIEnable(ID_FILE_PAGE_SETUP, !m_bMathBoxView);
-      UIEnable(ID_FILE_PRINT, m_bMathBoxView && m_MathBoxView.CanPrint());
+      UIEnable(ID_FILE_PRINT, m_bMathBoxView && m_MathBoxView.PageCount() > 0);
 
       UISetCheck(ID_EDIT_WORD_WRAP, m_EditView.m_bWordWrap);
       UISetCheck(ID_VIEW_MATH, m_bMathBoxView);
@@ -692,6 +655,80 @@ public:
 
 private:
 //INTERNALS
+   // Windows file adapter; PDF generation itself accepts a platform-neutral stream.
+   class CPDFFileStream : public SkWStream {
+      HANDLE m_hFile{ INVALID_HANDLE_VALUE }; //owned
+      size_t m_nWritten{ 0 };
+      bool m_bGood{ true };
+   public:
+      explicit CPDFFileStream(PCWSTR szPath) {
+         m_hFile = ::CreateFileW(szPath, GENERIC_WRITE, 0, nullptr, CREATE_NEW,
+                                FILE_ATTRIBUTE_NORMAL, nullptr);
+      }
+      ~CPDFFileStream() {
+         if (IsValid()) { ::CloseHandle(m_hFile); }
+      }
+      CPDFFileStream(const CPDFFileStream&) = delete;
+      CPDFFileStream& operator=(const CPDFFileStream&) = delete;
+      //SkWStream VT
+      bool IsValid() const { return m_hFile != INVALID_HANDLE_VALUE; }
+      bool write(const void* pData, size_t nBytes) override {
+         const BYTE* pNext = static_cast<const BYTE*>(pData);
+         while (m_bGood && nBytes) {
+            const DWORD nChunk = (DWORD)(min)(nBytes, (size_t)MAXDWORD);
+            DWORD nWritten = 0;
+            m_bGood = IsValid() && ::WriteFile(m_hFile, pNext, nChunk, &nWritten, nullptr) &&
+                      nWritten == nChunk;
+            m_nWritten += nWritten;
+            pNext += nWritten;
+            nBytes -= nWritten;
+         }
+         return m_bGood;
+      }
+      size_t bytesWritten() const override { return m_nWritten; }
+      void flush() override {
+         if (!IsValid() || !::FlushFileBuffers(m_hFile)) { m_bGood = false; }
+      }
+      bool Finish() {
+         flush();
+         if (IsValid()) {
+            if (!::CloseHandle(m_hFile)) { m_bGood = false; }
+            m_hFile = INVALID_HANDLE_VALUE;
+         }
+         return m_bGood;
+      }
+   };
+
+   bool SavePDF_(PCWSTR szDestination) {
+      GUID guid;
+      wchar_t wszGuid[40];
+      if (FAILED(::CoCreateGuid(&guid)) || !::StringFromGUID2(guid, wszGuid, _countof(wszGuid))) {
+         return false;
+      }
+      const wstring sTemporary = wstring(szDestination) + L"." + wszGuid + L".tmp";
+      bool bSuccess = false;
+      {
+         CPDFFileStream stream(sTemporary.c_str());
+         if (!stream.IsValid()) { return false; }
+         try {
+            bSuccess = m_MathBoxView.ExportPDF(stream);
+         } catch (...) {
+            bSuccess = false;
+         }
+         if (!stream.Finish()) {
+            bSuccess = false;
+         }
+      }
+      if (bSuccess) {
+         bSuccess = ::MoveFileExW(sTemporary.c_str(), szDestination,
+                                  MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH) != FALSE;
+      }
+      if (!bSuccess) {
+         ::DeleteFileW(sTemporary.c_str());
+      }
+      return bSuccess;
+   }
+
    HWND CreateToolbar_() {
       HINSTANCE hInstance = _Module.GetResourceInstance();
       HRSRC hResource = ::FindResourceW(hInstance, MAKEINTRESOURCEW(IDR_MAINFRAME), RT_TOOLBAR);

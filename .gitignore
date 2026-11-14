@@ -13,3 +13,6 @@ x64/
 /Bin/MathPad.pdb
 /Code/Release/MathPad.pdb
 /PromptForMathPad.md
+
+# Rebuild locally with Skia/Build/Rebuild.ps1
+/Skia/LibD/skia.lib

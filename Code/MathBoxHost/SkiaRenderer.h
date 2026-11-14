@@ -9,6 +9,7 @@ class CSkiaFontManager;
 class SkSurface;
 class SkMatrix;
 class SkPaint;
+class SkCanvas;
 
 class CSkiaRenderer {
 //DATA
@@ -17,6 +18,9 @@ class CSkiaRenderer {
    const CSkiaFontManager& m_FontManager; //borrowed; must outlive this renderer
    HWND                    m_hwnd{ nullptr }; //borrowed
    SkSurface*              m_pSurface{ nullptr }; //owned; released with unref()
+   SkCanvas*               m_pCanvas{ nullptr }; //borrowed during screen/PDF drawing
+   bool                    m_bPDFDrawing{ false };
+   int                     m_nCanvasSaveCount{ 0 };
    HRESULT                 m_hDrawResult{ S_OK };
    bool                    m_bDrawing{ false };
 public:
@@ -30,14 +34,12 @@ public:
 
    bool Initialize(HWND hwnd);
 //ATTS
-   bool CanPrint() const { return false; }
    void SetTextColor(uint32_t nARGB) { m_argbText = nARGB; }
    void SetFontSizePts(float fFontSizePts) { m_fFontSizePts = fFontSizePts; }
 //METHODS
-   bool OnBeginPrintJob(const wstring& sPrinterName);
-   void OnEndPrintJob();
-   bool OnPrintPageBegin(uint32_t argbBkg);
-   bool OnPrintPageEnd(SIZE szePageDIPs);
+   // The document owns pCanvas and must keep its page alive until EndPDFPage().
+   bool BeginPDFPage(SkCanvas* pCanvas);
+   HRESULT EndPDFPage();
    void EraseBkgnd(uint32_t nRGB);
    void OnSize(LPARAM lParam);
    void BeginDraw();
