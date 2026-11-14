@@ -321,6 +321,7 @@ END
 //
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+IDR_TOOLBAR32           RCDATA                  "res\\Toolbar32_Alpha.png"
 
 
 /////////////////////////////////////////////////////////////////////////////

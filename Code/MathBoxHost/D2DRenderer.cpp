@@ -27,7 +27,11 @@ HRESULT CD2DRenderer::Initialize(HWND hwnd) {
    RECT rc;
    GetClientRect(hwnd, &rc);
    D2D1_SIZE_U size = D2D1::SizeU(rc.right - rc.left, rc.bottom - rc.top);
-   hr = m_pD2DFactory->CreateHwndRenderTarget(D2D1::RenderTargetProperties(),
+   // The view uses client pixels for page placement, zoom and scroll offsets.
+   // Match those coordinates instead of applying the desktop DPI a second time.
+   hr = m_pD2DFactory->CreateHwndRenderTarget(
+                                              D2D1::RenderTargetProperties(D2D1_RENDER_TARGET_TYPE_DEFAULT,
+                                                 D2D1::PixelFormat(), 96.0f, 96.0f),
                                               D2D1::HwndRenderTargetProperties(hwnd, size), 
                                               &m_pHWNDRenderTarget);
    CHECK_HR(hr);
