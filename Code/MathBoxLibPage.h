@@ -8,6 +8,10 @@ class CMathBoxLibPage : public CPropertyPageImpl<CMathBoxLibPage> {
    const CCfgReader& m_cfgReader;   //external!
    wstring           m_sMacros{ L"Macros.mth" };
    float             m_fFontSizePts{ 10.0f };
+   wstring           m_sUtf8Font{ L"Arial" };
+   wstring           m_sSymbolFont{ L"Segoe UI Symbol" };
+   float             m_fUtf8FontScale{ 0.9f };
+   float             m_fSymbolFontScale{ 0.8f };
    CColorBtn         m_btnBkgColor;    //page bkg color
    CColorBtn         m_btnTextColor;   //page text color
 public:
@@ -18,6 +22,10 @@ public:
       // Load MathBoxLib settings from config
       m_cfgReader.GetSVal(L"MB_Macros", m_sMacros);
       m_cfgReader.GetFVal(L"MB_FontSizePts", m_fFontSizePts);
+      m_cfgReader.GetSVal(L"Utf8Font", m_sUtf8Font);
+      m_cfgReader.GetSVal(L"SymbolFont", m_sSymbolFont);
+      m_cfgReader.GetFVal(L"Utf8FontScale", m_fUtf8FontScale);
+      m_cfgReader.GetFVal(L"SymbolFontScale", m_fSymbolFontScale);
       uint32_t rgb = 0xFFFFFF;   // default white
       m_cfgReader.GetHVal(L"MB_ColorBkg", rgb);
       m_btnBkgColor.SetColor(rgb);
@@ -52,6 +60,12 @@ public:
       wchar_t sz[32];
       swprintf_s(sz, L"%.1f", m_fFontSizePts);
       SetDlgItemText(IDC_MB_FONT_SIZE, sz);
+      SetDlgItemTextW(IDC_MB_UTF8_FONT, m_sUtf8Font.c_str());
+      SetDlgItemTextW(IDC_MB_SYMBOL_FONT, m_sSymbolFont.c_str());
+      swprintf_s(sz, L"%.6g", m_fUtf8FontScale);
+      SetDlgItemTextW(IDC_MB_UTF8_FONT_SCALE, sz);
+      swprintf_s(sz, L"%.6g", m_fSymbolFontScale);
+      SetDlgItemTextW(IDC_MB_SYMBOL_FONT_SCALE, sz);
       SetColorText_(IDC_MB_BKG_COLOR,  m_btnBkgColor.GetColor());
       SetColorText_(IDC_MB_TEXT_COLOR, m_btnTextColor.GetColor());
       m_btnBkgColor.Subclass(GetDlgItem(IDC_MB_BKG_COLOR_BTN));
@@ -66,6 +80,10 @@ public:
       cfgW.AddFloat(L"MB_FontSizePts", m_fFontSizePts, 1);
       cfgW.AddUNumber(L"MB_ColorBkg", m_btnBkgColor.GetColor(), true);
       cfgW.AddUNumber(L"MB_ColorText", m_btnTextColor.GetColor(), true);
+      cfgW.AddString(L"Utf8Font", m_sUtf8Font);
+      cfgW.AddFloat(L"Utf8FontScale", m_fUtf8FontScale, 6);
+      cfgW.AddString(L"SymbolFont", m_sSymbolFont);
+      cfgW.AddFloat(L"SymbolFontScale", m_fSymbolFontScale, 6);
    }
  //CPropertyPageImpl OVERRIDES
    BOOL OnKillActive() {
@@ -73,6 +91,27 @@ public:
    }
 
 private:
+   bool ReadScale_(int nID, float& fScale) {
+      CString wsText;
+      GetDlgItemText(nID, wsText);
+      wchar_t* pEnd = nullptr;
+      float fValue = wcstof(wsText, &pEnd);
+      while (pEnd && iswspace(*pEnd)) { ++pEnd; }
+      if (pEnd == static_cast<PCWSTR>(wsText) || !pEnd || *pEnd ||
+          !std::isfinite(fValue) || fValue < 0.1f || fValue > 2.0f) {
+         MessageBox(L"Font scale must be a number between 0.1 and 2.0.", L"Validation", MB_ICONWARNING);
+         ::SetFocus(GetDlgItem(nID));
+         return false;
+      }
+      fScale = fValue;
+      return true;
+   }
+   wstring ReadFontFamily_(int nID) {
+      CString wsText;
+      GetDlgItemText(nID, wsText);
+      wsText.Trim();
+      return static_cast<PCWSTR>(wsText);
+   }
    void SetColorText_(int nID, uint32_t rgb) {
       wchar_t sz[16];
       swprintf_s(sz, L"%06X", rgb);
@@ -89,6 +128,15 @@ private:
          return TRUE;
       }
       m_fFontSizePts = fSize;
+      float fUtf8Scale, fSymbolScale;
+      if (!ReadScale_(IDC_MB_UTF8_FONT_SCALE, fUtf8Scale) ||
+          !ReadScale_(IDC_MB_SYMBOL_FONT_SCALE, fSymbolScale)) {
+         return TRUE;
+      }
+      m_fUtf8FontScale = fUtf8Scale;
+      m_fSymbolFontScale = fSymbolScale;
+      m_sUtf8Font = ReadFontFamily_(IDC_MB_UTF8_FONT);
+      m_sSymbolFont = ReadFontFamily_(IDC_MB_SYMBOL_FONT);
       uint32_t rgb = 0xFFFFFF;   // default white
       ParseHex_(IDC_MB_BKG_COLOR,  rgb);
       m_btnBkgColor.SetColor(rgb);

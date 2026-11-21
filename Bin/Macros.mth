@@ -9,15 +9,15 @@
 \setlength{\MinLineskipRatio}{0.1}       % minimum lineskip ratio
 \setlength{\stackundergap}{290}          % gap for \stackunder
 %--- Logos ---
-\newcommand{\TeX}{\text{T\kern{-0.1667em}\lower{0.5ex}{E}\kern{-0.125em}X}}
-\newcommand{\LaTeX}{%
-\text{L\kern{-0.36em}\raisebox{0.42ex}{\scriptsize A}%
+\newcommand{\TeX}{T\kern{-0.1667em}\lower{0.5ex}{E}\kern{-0.125em}X}
+\newcommand{\LaTeX}{
+L\kern{-0.36em}\raisebox{0.42ex}{\scriptsize A}%
 \kern{-0.15em}T\kern{-0.2em}\lower{0.4ex}{E}\kern{-0.15em}X%
-}}
-\newcommand{\KaTeX}{%
-\text{K\kern{-0.16em}\raisebox{0.42ex}{\scriptsize A}%
+}
+\newcommand{\KaTeX}{
+K\kern{-0.16em}\raisebox{0.42ex}{\scriptsize A}%
 \kern{-0.15em}T\kern{-0.2em}\lower{0.4ex}{E}\kern{-0.15em}X%
-}}
+}
 %--- unimath aliases- ---
 \let\thetasym=\vartheta
 \let\hbar=\hslash
@@ -51,3 +51,7 @@
 \newcommand{\half}[1]{\ensuremat{\frac{#1}{2}}}
 \newcommand{\@inner}[1]{\sqrt{\half{#1}}}
 \newcommand{\outer}[1]{\@inner{#1^2}}
+
+% MathBox v2 table defaults and multiline cell helper.
+\setlength{\tabcolsep}{6pt}
+\newcommand{\makecell}[2][c]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}

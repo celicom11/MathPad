@@ -1,15 +1,11 @@
 #include "stdafx.h"
 #include "MathBoxHost.h"
+#include "MathBoxApiValidation.h"
 #include "SkiaFontManager.h"
 #include "SkiaRenderer.h"
 
-namespace {
-   CSkiaFontManager*  _pFontManager{ nullptr };
-   CSkiaRenderer*     _pSKR{ nullptr };
-}
-CMathBoxHost::CMathBoxHost(CSkiaFontManager& skFontManager, CSkiaRenderer& skr) {
-   _pFontManager = &skFontManager;
-   _pSKR = &skr;
+CMathBoxHost::CMathBoxHost(CSkiaFontManager& skFontManager, CSkiaRenderer& skr) :
+   m_FontManager(skFontManager), m_Renderer(skr) {
    m_DocParams.size_bytes = sizeof(MB_DocParams);
    m_DocParams.max_width_fdu = 0;   //no limit
    m_DocParams.font_size_pts = 24.0f;
@@ -17,12 +13,14 @@ CMathBoxHost::CMathBoxHost(CSkiaFontManager& skFontManager, CSkiaRenderer& skr) 
    m_DocParams.color_bkg_argb = 0xFFFFFF;
    m_DocParams.color_selection_argb = 0xFF4FFF;
    //SkiaFontManager shim
+   m_DocParams.font_mgr.context = this;
    m_DocParams.font_mgr.size_bytes = sizeof(MBI_FontManager);
    m_DocParams.font_mgr.fontCount = 0; //unknown yet
    m_DocParams.font_mgr.getFontsDir = _getFontsDir;
    m_DocParams.font_mgr.getFontIndices = _getFontIndices;
    m_DocParams.font_mgr.getGlyphRunMetrics = _getGlyphRunMetrics;
    //DocRenderer shim
+   m_DocRenderer.context = this;
    m_DocRenderer.size_bytes = sizeof(MBI_DocRenderer);
    m_DocRenderer.drawLine = _drawLine;
    m_DocRenderer.drawRect = _drawRect;
@@ -31,19 +29,30 @@ CMathBoxHost::CMathBoxHost(CSkiaFontManager& skFontManager, CSkiaRenderer& skr) 
 }
 bool CMathBoxHost::LoadMathBoxLib() {
    //update font counts
-   m_DocParams.font_mgr.fontCount = _pFontManager->FontCount();
+   m_DocParams.font_mgr.fontCount = m_FontManager.FontCount();
    _ASSERT_RET(!m_pMBAPI && !m_hMathBoxLib && !m_engine, false);//snbh!
+   m_Error = {};
    m_hMathBoxLib = ::LoadLibraryW(L"MathBoxLib.dll");
-   _ASSERT_RET(m_hMathBoxLib, false);
+   if (!m_hMathBoxLib) {
+      m_Error.nErrorCode = MB_HOSTERR;
+      m_Error.sError = "Could not load MathBoxLib.dll (Windows error " + to_string(GetLastError()) + ")";
+      return false;
+   }
    auto pfnMB_GetApi = (const MBI_API * (*)())GetProcAddress(m_hMathBoxLib, "MB_GetApi");
-   _ASSERT_RET(pfnMB_GetApi, false);
-   m_pMBAPI = pfnMB_GetApi();
-   _ASSERT_RET(m_pMBAPI && m_pMBAPI->abi_version >= 1, false);
+   const MBI_API* pAPI = pfnMB_GetApi ? pfnMB_GetApi() : nullptr;
+   if (!IsMathBoxApiCompatible(pAPI)) {
+      m_Error.nErrorCode = MB_BADVERSION;
+      m_Error.sError = "MathBoxLib.dll requires a complete MathBox ABI 2 API table";
+      CleanUp(); // Do not retain or call an incompatible table, including during destruction.
+      return false;
+   }
+   m_pMBAPI = pAPI;
    MB_RET ret = m_pMBAPI->createEngine(&m_DocParams, &m_engine);
    if (ret != MBOK) {
       PCSTR szError = m_pMBAPI->getLastError(m_engine, &m_Error.nErrorStartPos, &m_Error.nErrorEndPos);
       m_Error.sError = szError ? szError : "Unknown error";
       m_Error.nErrorCode = ret;
+      CleanUp();
       return false;
    }
    return true;
@@ -67,6 +76,10 @@ void CMathBoxHost::CleanUp() {
 }
 bool CMathBoxHost::AddMacros(const string& sMacros, const string& sFile) {
    _ASSERT_RET(!!m_engine && !!m_pMBAPI, false);
+   if (m_pMBItem) {
+      m_pMBAPI->destroyMathItem(m_pMBItem);
+      m_pMBItem = nullptr;
+   }
    MB_RET ret = m_pMBAPI->addMacros(m_engine, sMacros.c_str(), sFile.c_str());
    if (ret != MBOK) {
       PCSTR szError = m_pMBAPI->getLastError(m_engine, &m_Error.nErrorStartPos, &m_Error.nErrorEndPos);
@@ -108,14 +121,14 @@ void CMathBoxHost::Draw(float fX, float fY, float fZoom) {
       if (!isfinite(fZoom) || fZoom <= 0) {
          return;
       }
-      _pSKR->SetFontSizePts(m_DocParams.font_size_pts);
+      m_Renderer.SetFontSizePts(m_DocParams.font_size_pts);
       if(fZoom != 1.0f) {
          SkMatrix matScale = SkMatrix::ScaleTranslate(fZoom, fZoom, 0, 0);
-         _pSKR->SetTransform(matScale);
+         m_Renderer.SetTransform(matScale);
       }
       m_pMBAPI->mathItemDraw(m_pMBItem, fX, fY, &m_DocRenderer);
       if (fZoom != 1.0f) { //restore
-         _pSKR->SetTransform(SkMatrix::I());
+         m_Renderer.SetTransform(SkMatrix::I());
       }
    }
 }
@@ -125,20 +138,20 @@ void CMathBoxHost::DrawLines(float fX, float fY, int32_t nLineStart, int32_t nLi
    if (!isfinite(fZoom) || fZoom <= 0) {
       return;
    }
-   _pSKR->SetFontSizePts(m_DocParams.font_size_pts);
+   m_Renderer.SetFontSizePts(m_DocParams.font_size_pts);
    if (fZoom != 1.0f) {
       SkMatrix matScale = SkMatrix::ScaleTranslate(fZoom, fZoom, 0, 0);
-      _pSKR->SetTransform(matScale);
+      m_Renderer.SetTransform(matScale);
    }
    m_pMBAPI->mathItemDrawLines(m_pMBItem, fX/fZoom, fY/fZoom, nLineStart, nLineEnd, &m_DocRenderer);
    if (fZoom != 1.0f) { //restore
-      _pSKR->SetTransform(SkMatrix::I());
+      m_Renderer.SetTransform(SkMatrix::I());
    }
 }
 //C-API/callbacks
-bool CMathBoxHost::_getFontsDir(IN OUT uint32_t* buf_len, OUT wchar_t* out_dir) {
-   _ASSERT_RET(buf_len, false);
-   const wstring wsFontDir = _pFontManager->GetFontDir();
+bool CMathBoxHost::_getFontsDir(void* pContext, IN OUT uint32_t* buf_len, OUT wchar_t* out_dir) {
+   if (!pContext || !buf_len) { return false; }
+   const wstring wsFontDir = static_cast<CMathBoxHost*>(pContext)->m_FontManager.GetFontDir();
    const uint32_t nLenChars = (uint32_t)wsFontDir.size() + 1;
    if(out_dir) {
       if(*buf_len < nLenChars)
@@ -150,30 +163,34 @@ bool CMathBoxHost::_getFontsDir(IN OUT uint32_t* buf_len, OUT wchar_t* out_dir) 
       *buf_len = nLenChars;
    return true;
 }
-bool CMathBoxHost::_getFontIndices(int32_t font_idx, uint32_t count, const uint32_t* unicodes, 
+bool CMathBoxHost::_getFontIndices(void* pContext, int32_t font_idx, uint32_t count, const uint32_t* unicodes,
                                     OUT uint16_t* out_indices) {
-   return _pFontManager->GetFontIndices(font_idx, count, unicodes, out_indices);
+   if (!pContext) { return false; }
+   return static_cast<CMathBoxHost*>(pContext)->m_FontManager.GetFontIndices(font_idx, count, unicodes, out_indices);
 }
-bool CMathBoxHost::_getGlyphRunMetrics(int32_t font_idx, uint32_t count,
+bool CMathBoxHost::_getGlyphRunMetrics(void* pContext, int32_t font_idx, uint32_t count,
                                           const uint16_t* indices, OUT MB_GlyphMetrics* out_glyph_metrics, 
                                           OUT MB_Bounds* out_bounds) {
-   if (!out_bounds) {
-      return false;
-   }
-   return _pFontManager->GetGlyphRunMetrics(font_idx, count, indices, out_glyph_metrics, *out_bounds);
+   if (!pContext || !out_bounds) { return false; }
+   return static_cast<CMathBoxHost*>(pContext)->m_FontManager.GetGlyphRunMetrics(font_idx, count, indices, out_glyph_metrics, *out_bounds);
 }
 //
-void CMathBoxHost::_drawLine(float x1, float y1, float x2, float y2, uint32_t style, float width, uint32_t argb) {
-   _pSKR->DrawLine(x1, y1, x2, y2, (EnumLineStyles)style, width, argb);
+void CMathBoxHost::_drawLine(void* pContext, float x1, float y1, float x2, float y2, uint32_t style, float width, uint32_t argb) {
+   if (!pContext) { return; }
+   static_cast<CMathBoxHost*>(pContext)->m_Renderer.DrawLine(x1, y1, x2, y2, (EnumLineStyles)style, width, argb);
 }
-void CMathBoxHost::_drawRect(float left, float top, float right, float bottom, 
+void CMathBoxHost::_drawRect(void* pContext, float left, float top, float right, float bottom,
                              uint32_t style, float width, uint32_t argb) {
-   _pSKR->DrawRect(left, top, right, bottom, (EnumLineStyles)style, width, argb);
+   if (!pContext) { return; }
+   static_cast<CMathBoxHost*>(pContext)->m_Renderer.DrawRect(left, top, right, bottom, (EnumLineStyles)style, width, argb);
 }
-void CMathBoxHost::_fillRect(float left, float top, float right, float bottom, uint32_t argb) {
-   _pSKR->FillRect(left, top, right, bottom, argb);
+void CMathBoxHost::_fillRect(void* pContext, float left, float top, float right, float bottom, uint32_t argb) {
+   if (!pContext) { return; }
+   static_cast<CMathBoxHost*>(pContext)->m_Renderer.FillRect(left, top, right, bottom, argb);
 }
-void CMathBoxHost::_drawGlyphRun(int32_t font_idx, uint32_t count, const uint16_t* indices,
+void CMathBoxHost::_drawGlyphRun(void* pContext, int32_t font_idx, uint32_t count, const uint16_t* indices,
                                  float base_x, float base_y, float scale, uint32_t argb) {
-   _pSKR->DrawGlyphRun(font_idx, count, indices, base_x, base_y, scale, argb);
+   if (!pContext) { return; }
+   static_cast<CMathBoxHost*>(pContext)->m_Renderer.DrawGlyphRun(font_idx, count, indices, base_x, base_y,
+      scale * static_cast<CMathBoxHost*>(pContext)->m_FontManager.GetFontScale(font_idx), argb);
 }

@@ -8,7 +8,7 @@ LaTeX engine is provided by cross-platform MathBox library (https://github.com/c
 - Rich text LaTeX editor with error highlighting
 - Page-layout math renderer (MathBoxLib)
 - Per-document settings via `%% key = value` header comments
-- Printing is currently unavailable while the Skia print path is being implemented
+- Direct PDF export through Skia
 
 ## Requirements
 - Windows 10/11 x64
@@ -23,7 +23,7 @@ FreeType or external Skia project is needed. See [Skia package details](Skia/REA
 The executable and all runtime assets are output to `Bin\`.
 
 ## Runtime files (pre-placed in `Bin\`)
-- `MathBoxLib.dll` — math renderer, v1.1-beta (ABI v1)
+- `MathBoxLib.dll` — math renderer, local v2.0.0-beta (ABI 2)
 - `LatinModernFonts\` — required fonts
 - `Macros.mth` — LaTeX macro definitions
 - `MathPad.cfg` — default configuration
@@ -83,11 +83,63 @@ The configuration file uses a simple `key = value` format. Lines starting with `
 | `MB_FontSizePts` | `10.0` | Base math font size in points |
 | `MB_ColorBkg` | `0xFFFFFF` | Page/math background color (RGB hex) |
 | `MB_ColorText` | `0x0` | Math text color (RGB hex) |
+| `Utf8Font` | `Arial` | Installed Unicode text family; regular/bold/italic/bold-italic slots 14–17 |
+| `Utf8FontScale` | `0.9` | Inner scale applied to Unicode metrics and drawing; range 0.1–2.0 |
+| `SymbolFont` | `Segoe UI Symbol` | Installed monochrome symbol family, slot 18 |
+| `SymbolFontScale` | `0.8` | Inner scale applied to symbol metrics and drawing; range 0.1–2.0 |
 
 ### `[MRU List]`
 Contains recently used files.
 
 ## Limitations
-- **ASCII input only** — extended Unicode characters in the source text are not supported
+- UTF-8 input is supported; complex-script shaping, bidirectional layout and color emoji are not supported
 - Windows 10/11 x64 only
 - No installer — xcopy deployment
+
+## Local MathBox v2 integration
+
+The ABI-2 header and Release DLL/PDB come from the local package
+`D:/Dev/Projects/MyCode/MathBoxDemo/Releases/MathBox-v2.0.0-beta`.
+This integration is local and unpublished pending MathPad and FEML testing.
+Both MathPad configurations use the packaged Release DLL; the opaque C ABI
+keeps DLL allocation and destruction together. No MathBox rebuild is required.
+The host checks exact ABI major 2, sufficient API-table size and required entries.
+Font and renderer contexts borrow per-host resources owned by the application
+frame; items and engines are released before those resources and the DLL.
+
+The four font settings above can be edited on the MathBox page of the Settings
+dialog and are saved in the `;MathBox` section. Scales must be finite numbers
+from 0.1 through 2.0, inclusive. Font changes take effect after restarting MathPad.
+An empty font family disables that optional group. Missing
+configured families or invalid scales cause startup to report an error.
+Editor load/save and parser input use UTF-8. Parser byte positions are mapped
+to RichEdit UTF-16 positions, including CRLF and supplementary characters.
+The standard macro updates include `tabcolsep`, multiline `makecell` and logos.
+The original Latin Modern font order and font files are retained.
+
+Skia retains the packaged FreeType backend. Installed font files are located
+through the Windows machine/user font registry and their family/style names
+are verified through FreeType. Family names should match the installed font
+registry display names (including spaces). Available faces are chosen by
+slant, width and weight; absent styles use the closest real face. No synthetic
+styles, DirectWrite dependency or Skia rebuild is introduced. Slots 0–13 keep
+the frozen metric path; optional faces normalize their metrics to 1000 units/em.
+
+Local validation (2026-11-21): Debug and Release x64 builds pass. The focused
+`Tests/MathBoxV2Check.cpp` checks pass in both configurations: ABI-table rejection,
+real ABI-1 DLL rejection/unloading, UTF-8 positions, all 19 font slots and scales,
+two-host context isolation, real raster drawing, Unicode/symbol/table parsing,
+legacy samples and repeated cleanup. Run `Tools/CheckMathBoxV2.ps1 -Skia
+-Configuration Release` (or `Debug`) from an x64 Developer PowerShell.
+These test tools remain local-only.
+
+The existing `Tools/CheckSkia.ps1 -Configuration Both` checks also pass: all
+15,401 frozen glyph metrics and stored outline-run bounds have zero differences;
+font reload, raster/zoom/resize, PDF export/recovery and three Debug shutdown
+cycles pass (zero retained normal-heap bytes/blocks). The final Release executable
+imports no DirectWrite, D2D, D3D or DXGI DLLs. Interactive rendering comparisons,
+editor file round trips and visible error highlighting still need manual checks.
+
+The MathBox settings controls, installed editor-font family list, and immediate
+editor font updates (preserving undo history and the modified flag) match
+master commit `5335727`.

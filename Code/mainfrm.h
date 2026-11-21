@@ -16,16 +16,6 @@
 #define FILE_MENU_POSITION	0
 #define RECENT_MENU_POSITION	10
 #define CFGFILENAME   L"MathPad.cfg"
-namespace {
-   uint32_t _CountCRs(PCSTR szText, uint32_t nLen){
-      uint32_t nRet = 0;
-      for (uint32_t nIdx = 0; nIdx + 1 < nLen; ++nIdx) {
-         if (szText[nIdx] == '\r')
-            ++nRet;
-      }
-      return nRet;
-   };
-}
 class CMainFrame :
    public CFrameWindowImpl<CMainFrame>,
    public CUpdateUI<CMainFrame> {
@@ -174,8 +164,31 @@ public:
       }
       wstring sErrorMsg;
       if (!m_CfgReader.Init((m_sAppDir + CFGFILENAME).c_str())) {
-         sErrorMsg = L"Could not read MathBox.cfg";
+         sErrorMsg = L"Could not read MathPad.cfg";
          CWindow::MessageBox(sErrorMsg.c_str(), L"Error", MB_OK | MB_ICONERROR);
+         return -1;
+      }
+
+      // Match MathBoxDemo's optional Unicode and symbol font groups.
+      wstring wsUtf8Font = L"Arial", wsSymbolFont = L"Segoe UI Symbol";
+      float fUtf8Scale = 0.9f, fSymbolScale = 0.8f;
+      try {
+         m_CfgReader.GetSVal(L"Utf8Font", wsUtf8Font);
+         m_CfgReader.GetSVal(L"SymbolFont", wsSymbolFont);
+         m_CfgReader.GetFVal(L"Utf8FontScale", fUtf8Scale);
+         m_CfgReader.GetFVal(L"SymbolFontScale", fSymbolScale);
+      } catch (const std::exception&) {
+         CWindow::MessageBox(L"Invalid MathBox font scale in MathPad.cfg", L"Error", MB_OK | MB_ICONERROR);
+         return -1;
+      }
+      if (!std::isfinite(fUtf8Scale) || fUtf8Scale < 0.1f || fUtf8Scale > 2.0f ||
+          !std::isfinite(fSymbolScale) || fSymbolScale < 0.1f || fSymbolScale > 2.0f) {
+         CWindow::MessageBox(L"MathBox font scales must be between 0.1 and 2.0.", L"Error", MB_OK | MB_ICONERROR);
+         return -1;
+      }
+      if ((!wsUtf8Font.empty() && !m_skFontManager.AddUtf8Font(wsUtf8Font.c_str(), fUtf8Scale)) ||
+          (!wsSymbolFont.empty() && !m_skFontManager.AddSymbolFont(wsSymbolFont.c_str(), fSymbolScale))) {
+         CWindow::MessageBox(L"Could not load Utf8Font or SymbolFont, or its scale is invalid", L"Error", MB_OK | MB_ICONERROR);
          return -1;
       }
 
@@ -483,11 +496,13 @@ public:
          m_EditView.InitView(m_CfgReader);
          
          //re-parse LaTeX from edit control to reflect settings change
-         int nLength = m_EditView.GetWindowTextLength();
-         vector<char> vLaTex(nLength + 1, '\0');
-         ::GetWindowTextA(m_EditView, vLaTex.data(), nLength + 1);
-         if ('\0' != vLaTex[0])
-            m_MathBoxView.SetMathContent(vLaTex.data());
+         string sLaTex;
+         if (!m_EditView.GetUtf8Text(sLaTex)) {
+            MessageBox(L"Could not encode document as UTF-8", L"Error", MB_OK | MB_ICONERROR);
+            return 0;
+         }
+         if (!sLaTex.empty())
+            m_MathBoxView.SetMathContent(sLaTex.c_str());
       }
       return 0;
    }
@@ -495,10 +510,12 @@ public:
    {
       if (!m_bMathBoxView) {
          //re-parse LaTeX from edit control
-         int nLength = m_EditView.GetWindowTextLength();
-         vector<char> vLaTex(nLength + 1, '\0');
-         ::GetWindowTextA(m_EditView, vLaTex.data(), nLength + 1);
-         if ('\0' == vLaTex[0]) {
+         string sLaTex;
+         if (!m_EditView.GetUtf8Text(sLaTex)) {
+            MessageBox(L"Could not encode document as UTF-8", L"Error", MB_OK | MB_ICONERROR);
+            return 0;
+         }
+         if (sLaTex.empty()) {
             //empty content/nothing to show
             MessageBeep(MB_ICONERROR);
             return 0; 
@@ -506,16 +523,15 @@ public:
          //clear error if any
          m_EditView.ClearErrorHighlight();
          SetStatusTextA("");
-         if (!m_MathBoxView.SetMathContent(vLaTex.data())) {
+         if (!m_MathBoxView.SetMathContent(sLaTex.c_str())) {
             const SMathBoxError& err = m_MathBoxView.LastError();
             // 1. Show first line in status bar
             string sFirstLine = err.sError.substr(0, err.sError.find('\n'));
             SetStatusTextA(sFirstLine.c_str());
             // 2. Highlight error region in edit view
-            // Convert parser byte offsets (\r\n=2) to RichEdit char offsets (\r=1)
-            // by subtracting the count of \r\n pairs before each position.
-            uint32_t nErrStart = err.nErrorStartPos - _CountCRs(vLaTex.data(), err.nErrorStartPos);
-            uint32_t nErrEnd = err.nErrorEndPos - _CountCRs(vLaTex.data(), err.nErrorEndPos);
+            // Convert UTF-8 byte offsets to RichEdit UTF-16 positions.
+            uint32_t nErrStart = Utf8ByteOffsetToRichEdit(sLaTex, err.nErrorStartPos);
+            uint32_t nErrEnd = Utf8ByteOffsetToRichEdit(sLaTex, err.nErrorEndPos);
             m_EditView.HighlightError(nErrStart, nErrEnd, err.sError);
             MessageBeep(MB_ICONERROR);
             return 0;
@@ -650,7 +666,13 @@ public:
    }
    void SetStatusTextA(const string& sText) {
       if (m_hWndStatusBar)
-         ::SetWindowTextA(m_hWndStatusBar, sText.c_str());
+      {
+         int nChars = MultiByteToWideChar(CP_UTF8, 0, sText.c_str(), -1, nullptr, 0);
+         vector<wchar_t> vText(nChars);
+         if (nChars && MultiByteToWideChar(CP_UTF8, 0, sText.c_str(), -1, vText.data(), nChars)) {
+            ::SetWindowTextW(m_hWndStatusBar, vText.data());
+         }
+      }
    }
 
 private:

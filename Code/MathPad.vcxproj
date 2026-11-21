@@ -308,6 +308,8 @@
     <ClInclude Include="finddlg.h" />
     <ClInclude Include="mainfrm.h" />
     <ClInclude Include="MathBoxHost\MathBoxHost.h" />
+    <ClInclude Include="MathBoxHost\MathBoxApiValidation.h" />
+    <ClInclude Include="Utf8Text.h" />
     <ClInclude Include="MathBoxHost\MathBoxHostDefs.h" />
     <ClInclude Include="MathBoxHost\MathBox_CAPI.h" />
     <ClInclude Include="MathBoxViewPage.h" />
