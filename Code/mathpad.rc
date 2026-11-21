@@ -55,7 +55,7 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "About MathPad"
 FONT 10, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CTEXT           "MathPad v1.0-beta\nLaTex Mini-Editor\n© Celicom, 2026",IDC_STATIC,14,20,104,30
+    CTEXT           "MathPad v1.1-beta\nLaTex Mini-Editor\n© Celicom, 2026",IDC_STATIC,14,20,104,30
     CTEXT           "MathBox ABI: 1",IDC_MATHBOXABI_VERSION,10,50,104,11
     ICON            IDR_MAINFRAME,IDC_STATIC,55,61,20,20
     GROUPBOX        "",IDC_STATIC,7,7,115,85
@@ -340,13 +340,13 @@ IDR_TOOLBAR32           RCDATA                  "res\\Toolbar32_Alpha.png"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 1,0,0,1
- PRODUCTVERSION 1,0,0,1
+ FILEVERSION 1,1,0,0
+ PRODUCTVERSION 1,1,0,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
- FILEFLAGS 0x1L
+ FILEFLAGS 0x3L
 #else
- FILEFLAGS 0x0L
+ FILEFLAGS 0x2L
 #endif
  FILEOS 0x4L
  FILETYPE 0x1L
@@ -358,12 +358,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Celicom"
             VALUE "FileDescription", "MathPad LaTex Mini-Editor"
-            VALUE "FileVersion", "1, 0, 0, 1"
+            VALUE "FileVersion", "1.1-beta"
             VALUE "InternalName", "MathPad"
             VALUE "LegalCopyright", "Copyright © Celicom, 2007-2026"
             VALUE "OriginalFilename", "MathPad.EXE"
             VALUE "ProductName", "MathPad Application"
-            VALUE "ProductVersion", "1, 0, 0, 1"
+            VALUE "ProductVersion", "1.1-beta"
         END
     END
     BLOCK "VarFileInfo"
@@ -401,7 +401,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDR_MAINFRAME           "MathPad v1.0-beta"
+    IDR_MAINFRAME           "MathPad v1.1-beta"
 END
 
 STRINGTABLE
