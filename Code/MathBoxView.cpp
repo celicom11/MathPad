@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "MathBoxView.h"
 #include "CfgReader.h"
+#include "Utf8Text.h"
 #include "MathBoxHost/D2DRenderer.h"
 
 //STATIC HELPERS
@@ -243,6 +244,7 @@ LRESULT CMathBoxView::OnPaint(UINT /*uMsg*/, WPARAM wParam, LPARAM lParam, BOOL&
 }
 //METHODS
 bool CMathBoxView::InitMathBox(OUT wstring& sErrorMsg) {
+   ReadCfgSettings_();
    // MathBox settings
    wstring wsMacrosFile = L"Macros.mth"; //default
    m_cfgr.GetSVal(L"MB_Macros", wsMacrosFile);
@@ -251,7 +253,7 @@ bool CMathBoxView::InitMathBox(OUT wstring& sErrorMsg) {
       string sMBError = m_mathBoxHost.LastError().sError;
       if (!sMBError.empty()) {
          vector<wchar_t> vError(sMBError.size() + 1);
-         MultiByteToWideChar(CP_ACP, 0, sMBError.c_str(), -1, vError.data(), (int)vError.size());
+         MultiByteToWideChar(CP_UTF8, 0, sMBError.c_str(), -1, vError.data(), (int)vError.size());
          sErrorMsg.assign(vError.data(), vError.size() - 1);
       }
       else
@@ -262,13 +264,11 @@ bool CMathBoxView::InitMathBox(OUT wstring& sErrorMsg) {
    if (!wsMacrosFile.empty()) {
       //read file
       string sMacros, sMacrosFile;
-      //wsMacrosFile -> sMacrosFile
-      {
-         vector<char> vBuf((wsMacrosFile.size() + 1) * sizeof(wchar_t));
-         int nChars = WideCharToMultiByte(CP_ACP, 0, wsMacrosFile.c_str(), -1, vBuf.data(), (int)vBuf.size(), NULL, NULL);
-         sMacrosFile.assign(vBuf.data(), nChars - 1);
+      if (!WideTextToUtf8(wsMacrosFile.data(), static_cast<int>(wsMacrosFile.size()), sMacrosFile)) {
+         sErrorMsg = L"Invalid macro file path";
+         return false;
       }
-      ifstream ifsFile(sMacrosFile, std::ios::in | std::ios::binary);
+      ifstream ifsFile(wsMacrosFile.c_str(), std::ios::in | std::ios::binary);
       if (!ifsFile) {
          sErrorMsg = L"Failed to read macros file: " + wsMacrosFile;
          return false;

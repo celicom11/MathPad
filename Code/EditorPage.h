@@ -56,7 +56,7 @@ public:
       return 0;
    }
    LRESULT OnInitDialog(UINT, WPARAM, LPARAM, BOOL&) {
-      SetDlgItemText(IDC_EDIT_FONT_NAME, m_sFontName.c_str());
+      InitFontNames_();
       SetDlgItemInt(IDC_EDIT_FONT_SIZE, m_nFontSize, FALSE);
       CheckDlgButton(IDC_EDIT_WORD_WRAP_CHK, m_bWordWrap ? BST_CHECKED : BST_UNCHECKED);
       CheckDlgButton(IDC_EDIT_SYNTAX_HIGHLIGHT_CHK, m_bSyntaxHighlight ? BST_CHECKED : BST_UNCHECKED);
@@ -84,6 +84,35 @@ public:
    }
 
 private:
+   void InitFontNames_() {
+      CComboBox comboFonts(GetDlgItem(IDC_EDIT_FONT_NAME));
+      comboFonts.ResetContent();
+      LOGFONTW logFont{};
+      logFont.lfCharSet = DEFAULT_CHARSET;
+      CClientDC dc(m_hWnd);
+      // Enumeration is synchronous; the combo remains valid for every callback.
+      ::EnumFontFamiliesExW(dc, &logFont, EnumFontFamily_,
+                            reinterpret_cast<LPARAM>(comboFonts.m_hWnd), 0);
+      int nSelection = comboFonts.FindStringExact(-1, m_sFontName.c_str());
+      if (nSelection != CB_ERR) {
+         comboFonts.SetCurSel(nSelection);
+      }
+      else {
+         comboFonts.SetWindowTextW(m_sFontName.c_str());
+      }
+   }
+   static int CALLBACK EnumFontFamily_(const LOGFONTW* pLogFont, const TEXTMETRICW*,
+                                       DWORD, LPARAM lParam) {
+      // Skip vertical-writing aliases and repeated entries for other charsets.
+      PCWSTR szFamily = pLogFont->lfFaceName;
+      if (*szFamily && *szFamily != L'@') {
+         CComboBox comboFonts(reinterpret_cast<HWND>(lParam));
+         if (comboFonts.FindStringExact(-1, szFamily) == CB_ERR) {
+            comboFonts.AddString(szFamily);
+         }
+      }
+      return 1;
+   }
    void SetDlgItemText_(int nID, uint32_t rgb) {
       wchar_t sz[16];
       swprintf_s(sz, L"%06X", rgb);

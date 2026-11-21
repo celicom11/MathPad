@@ -299,6 +299,8 @@
     <ClInclude Include="MathBoxHost\D2DGeomSink.h" />
     <ClInclude Include="MathBoxHost\D2DRenderer.h" />
     <ClInclude Include="MathBoxHost\MathBoxHost.h" />
+    <ClInclude Include="MathBoxHost\MathBoxApiValidation.h" />
+    <ClInclude Include="Utf8Text.h" />
     <ClInclude Include="MathBoxHost\MathBoxHostDefs.h" />
     <ClInclude Include="MathBoxHost\MathBox_CAPI.h" />
     <ClInclude Include="MathBoxViewPage.h" />

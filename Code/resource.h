@@ -44,6 +44,10 @@
 #define IDC_MB_BKG_COLOR_BTN            1043
 #define IDC_MB_TEXT_COLOR               1044
 #define IDC_MB_TEXT_COLOR_BTN           1045
+#define IDC_MB_UTF8_FONT                1046
+#define IDC_MB_UTF8_FONT_SCALE          1047
+#define IDC_MB_SYMBOL_FONT              1048
+#define IDC_MB_SYMBOL_FONT_SCALE        1049
 
 // Next default values for new objects
 // 

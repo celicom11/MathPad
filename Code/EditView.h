@@ -2,6 +2,7 @@
 #include <textserv.h> // Required for ITextDocument
 #include <tom.h>
 #include "CfgReader.h"
+#include "Utf8Text.h"
 
 #define RGB2BGR(nRGB)      ((nRGB&0x00FF00)|((nRGB&0x0000FF)<<16)|((nRGB&0xFF0000)>>16))
 #define WM_UPDATEROWCOL    (WM_USER + 1000)
@@ -130,10 +131,10 @@ public:
          long nCharIndex = CharFromPos(pt);
 
          if (nCharIndex >= m_nErrorStart && nCharIndex <= m_nErrorEnd) {
-            // Convert ANSI error message to wide string for tooltip
-            int nLen = MultiByteToWideChar(CP_ACP, 0, m_sErrorTooltip.c_str(), -1, NULL, 0);
+            // Convert UTF-8 error message to wide string for tooltip
+            int nLen = MultiByteToWideChar(CP_UTF8, 0, m_sErrorTooltip.c_str(), -1, NULL, 0);
             vector<wchar_t> wsBuf(nLen);
-            MultiByteToWideChar(CP_ACP, 0, m_sErrorTooltip.c_str(), -1, wsBuf.data(), nLen);
+            MultiByteToWideChar(CP_UTF8, 0, m_sErrorTooltip.c_str(), -1, wsBuf.data(), nLen);
 
             CToolInfo ti(TTF_SUBCLASS, m_hWnd, 0, NULL, wsBuf.data());
             m_tooltip.UpdateTipText(&ti);
@@ -218,6 +219,17 @@ public:
    }
 
    //METHODS
+   bool GetUtf8Text(string& sText) const {
+      // Request CRLF explicitly; byte offsets are mapped back by Utf8Text.h.
+      GETTEXTLENGTHEX length = { GTL_PRECISE | GTL_NUMCHARS | GTL_USECRLF, 1200 };
+      LRESULT nLength = ::SendMessage(m_hWnd, EM_GETTEXTLENGTHEX, (WPARAM)&length, 0);
+      if (nLength < 0 || nLength > nMaxBufferLen * 2) { return false; }
+      vector<wchar_t> vText(static_cast<size_t>(nLength) + 1);
+      GETTEXTEX request = { static_cast<DWORD>(vText.size() * sizeof(wchar_t)), GT_USECRLF, 1200, nullptr, nullptr };
+      LRESULT nCopied = ::SendMessage(m_hWnd, EM_GETTEXTEX, (WPARAM)&request, (LPARAM)vText.data());
+      return nCopied >= 0 && WideTextToUtf8(vText.data(), static_cast<int>(nCopied), sText);
+   }
+
    void HighlightError(uint32_t nStart, uint32_t nEnd, const string& sErrorTooltip) {
       BOOL bModified = CRichEditCtrl::GetModify();
       // Clear previous error highlighting
@@ -328,6 +340,16 @@ public:
    }
 
    void InitView(const CCfgReader& cfgr) {
+      BOOL bModified = CRichEditCtrl::GetModify();
+      // Display settings must not become document edits in the undo history.
+      IRichEditOle* pOle = GetOleInterface();
+      ITextDocument* pDoc = nullptr;
+      if (pOle) {
+         pOle->QueryInterface(__uuidof(ITextDocument), (void**)&pDoc);
+      }
+      if (pDoc) {
+         pDoc->Undo(tomSuspend, nullptr);
+      }
       // View settings
       uint32_t nRGB = 0xFFFFFF;
       cfgr.GetHVal(L"EditColorBkg", nRGB);
@@ -335,20 +357,26 @@ public:
 
       nRGB = 0;
       cfgr.GetHVal(L"EditColorText", nRGB);
-      CHARFORMAT cf;
-      CRichEditCtrl::GetDefaultCharFormat(cf); // Get current defaults
-      cf.dwMask |= CFM_COLOR;
-      cf.dwEffects &= ~CFE_AUTOCOLOR; // Disable automatic system color
+      CHARFORMAT cf{};
+      cf.dwMask = CFM_FACE | CFM_SIZE | CFM_COLOR;
       cf.crTextColor = RGB2BGR(nRGB);
-      CRichEditCtrl::SetDefaultCharFormat(cf);
 
       wstring sFontName{ L"Tahoma" };
       cfgr.GetSVal(L"EditFontName", sFontName);
       int nFontSize = 14;
       cfgr.GetNVal(L"EditFontSize", nFontSize);
-      m_font = NULL;
-      m_font.CreatePointFont(nFontSize * 10, sFontName.c_str());
-      SetFont(m_font);
+      CFont font;
+      if (font.CreatePointFont(nFontSize * 10, sFontName.c_str())) {
+         SetFont(font);
+         if(!m_font.IsNull())
+            m_font.DeleteObject();
+         m_font.Attach(font.Detach());
+      }
+      cf.yHeight = nFontSize * 20; // RichEdit uses twips, 20 per point.
+      wcsncpy_s(cf.szFaceName, sFontName.c_str(), _TRUNCATE);
+      CRichEditCtrl::SetDefaultCharFormat(cf);
+      // WM_SETFONT alone leaves existing RichEdit character runs unchanged.
+      CRichEditCtrl::SetCharFormat(cf, SCF_ALL);
       //Word wrap
       m_bWordWrap = false;
       cfgr.GetBVal(L"EditWordWrap", m_bWordWrap);
@@ -373,7 +401,14 @@ public:
             pf.rgxTabs[i] = (i + 1) * cxTab;
          CRichEditCtrl::SetParaFormat(pf);
       }*/
-      CRichEditCtrl::SetModify(FALSE);
+      if (pDoc) {
+         pDoc->Undo(tomResume, nullptr);
+         pDoc->Release();
+      }
+      if (pOle) {
+         pOle->Release();
+      }
+      CRichEditCtrl::SetModify(bModified);
    }
 
    BOOL LoadFile(LPCTSTR lpstrFilePath) {
@@ -387,7 +422,7 @@ public:
       es.dwCookie = (DWORD_PTR)hFile;
       es.dwError = 0;
       es.pfnCallback = _StreamReadCallback;
-      StreamIn(SF_TEXT, es);
+      StreamIn(SF_TEXT | SF_USECODEPAGE | (static_cast<UINT>(CP_UTF8) << 16), es);
 
       ::CloseHandle(hFile);
       CRichEditCtrl::SetModify(FALSE);
@@ -414,7 +449,7 @@ public:
       es.dwCookie = (DWORD_PTR)hFile;
       es.dwError = 0;
       es.pfnCallback = _StreamWriteCallback;
-      StreamOut(SF_TEXT, es);
+      StreamOut(SF_TEXT | SF_USECODEPAGE | (static_cast<UINT>(CP_UTF8) << 16), es);
 
       ::CloseHandle(hFile);
       if (es.dwError)

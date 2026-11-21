@@ -8,9 +8,12 @@ class CLMMFont;
 //cpp front-end for MBI_API/parsed MB_MathItem
 class CMathBoxHost {
 //DATA
+   // Borrowed; the frame owns these and keeps them alive through CleanUp().
+   CD2DFontManager&       m_FontManager;
+   CD2DRenderer&          m_Renderer;
    HMODULE                 m_hMathBoxLib{ nullptr };
-   MB_DocParams            m_DocParams;
-   MBI_DocRenderer         m_DocRenderer;
+   MB_DocParams            m_DocParams{};
+   MBI_DocRenderer         m_DocRenderer{};
    const MBI_API*          m_pMBAPI{ nullptr }; //external/dnd!
    MB_Engine               m_engine{ nullptr };
    MB_MathItem             m_pMBItem{ nullptr };
@@ -20,6 +23,8 @@ public:
 //CTOR/DTOR/INIT
    CMathBoxHost() = delete;
    CMathBoxHost(CD2DFontManager& d2dFontManager, CD2DRenderer& d2dr);
+   CMathBoxHost(const CMathBoxHost&) = delete;
+   CMathBoxHost& operator=(const CMathBoxHost&) = delete;
    ~CMathBoxHost() { CleanUp(); }
    bool LoadMathBoxLib();
    void CleanUp();
@@ -40,15 +45,15 @@ public:
    void Draw(float fX, float fY, float fZoom);
    void DrawLines(float fX, float fY, int32_t nLineStart, int32_t nLineEnd, float fZoom);
    //C-API/callbacks
-   static bool _getFontsDir(IN OUT uint32_t* buf_len, OUT wchar_t* out_dir);
-   static bool _getFontIndices(int32_t font_idx, uint32_t count, const uint32_t* unicodes, OUT uint16_t* out_indices);
-   static bool _getGlyphRunMetrics(int32_t font_idx, uint32_t count, const uint16_t* indices,
+   static bool _getFontsDir(void* pContext, IN OUT uint32_t* buf_len, OUT wchar_t* out_dir);
+   static bool _getFontIndices(void* pContext, int32_t font_idx, uint32_t count, const uint32_t* unicodes, OUT uint16_t* out_indices);
+   static bool _getGlyphRunMetrics(void* pContext, int32_t font_idx, uint32_t count, const uint16_t* indices,
                                      OUT MB_GlyphMetrics* out_glyph_metrics, OUT MB_Bounds* out_bounds);
    //
-   static void _drawLine(float x1, float y1, float x2, float y2, uint32_t style, float width, uint32_t argb);
-   static void _drawRect(float l, float t, float r, float b, uint32_t style, float width, uint32_t argb);
-   static void _fillRect(float l, float t, float r, float b, uint32_t argb);
-   static void _drawGlyphRun(int32_t font_idx, uint32_t count, const uint16_t* indices,
+   static void _drawLine(void* pContext, float x1, float y1, float x2, float y2, uint32_t style, float width, uint32_t argb);
+   static void _drawRect(void* pContext, float l, float t, float r, float b, uint32_t style, float width, uint32_t argb);
+   static void _fillRect(void* pContext, float l, float t, float r, float b, uint32_t argb);
+   static void _drawGlyphRun(void* pContext, int32_t font_idx, uint32_t count, const uint16_t* indices,
                               float base_x, float base_y, float scale, uint32_t argb);
    //TODO: static void _traceMsg(int nLevel,const char* szMsg);
 
